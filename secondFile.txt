@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 ait
-da
+DA
 me
+=======
+puth
+ait
+DA
+>>>>>>> git_2
 we
 fight
 like
