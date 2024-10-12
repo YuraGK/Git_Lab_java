@@ -22,11 +22,13 @@ public class TrainerDAO {
 			newId = trainers.get(trainers.keySet().stream().max(Comparator.naturalOrder()).get()-1).getUserId()+1;
 		}
 		
-		try {
+		Long num = selectSimilarTrainers(firstName+"."+lastName);
+		
+		if(num>0){
 			selectTrainer(firstName+"."+lastName);
-			trainers.put(newId, new Trainer(firstName,lastName, firstName+"."+lastName+"1", PasswordGenerator.generatePassword(), specialisation, newId));
+			trainers.put(newId, new Trainer(firstName,lastName, firstName+"."+lastName+(num), PasswordGenerator.generatePassword(), specialisation, newId));
 
-		}catch(NoSuchElementException e) {
+		}else{
 			trainers.put(newId, new Trainer(firstName,lastName, firstName+"."+lastName, PasswordGenerator.generatePassword(), specialisation, newId));
 
 		}
@@ -53,6 +55,13 @@ public class TrainerDAO {
 		  .findFirst().map(k -> trainers.get(k))
 		  .get();
 	}
+	
+	//get similar trainers num
+		private Long selectSimilarTrainers(String username) {
+			return trainers.keySet().stream()
+					.filter(k -> trainers.get(k).getUsername().matches(username))
+					.count();
+		}
 	
 	//get trainer map
 	public Map<Long, Trainer> selectTrainers() {

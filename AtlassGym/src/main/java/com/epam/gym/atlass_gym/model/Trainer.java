@@ -29,4 +29,10 @@ public class Trainer extends User{
 		return getFirstName()+" "+getLastName()+" "+getUsername()+" "+getPassword()+" "+specialisation.getTraining_type()+" "+userId; 
 		
 	}
+	
+	@Override 
+	public boolean equals(Object obj) {
+		
+		return obj.toString().equals(toString());
+	}
 }

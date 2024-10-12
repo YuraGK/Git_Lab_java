@@ -89,4 +89,10 @@ public class Training {
 		return String.join(":", traineeId)+" "+String.join(":", trainerId)+" "+trainingName+" "+trainingType.getTraining_type()+" "+trainingDuration; 
 		
 	}
+	
+	@Override 
+	public boolean equals(Object obj) {
+		
+		return obj.toString().equals(toString());
+	}
 }

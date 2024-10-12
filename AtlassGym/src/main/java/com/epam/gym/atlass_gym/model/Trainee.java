@@ -33,4 +33,10 @@ public class Trainee extends User{
 		
 	}
 	
+	@Override 
+	public boolean equals(Object obj) {
+		
+		return obj.toString().equals(toString());
+	}
+	
 }

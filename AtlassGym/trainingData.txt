@@ -1,0 +1,3 @@
+0   A light 15
+1   B heavy 45
+2   C med 60

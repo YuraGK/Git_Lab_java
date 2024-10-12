@@ -22,11 +22,12 @@ public class TraineeDAO {
 			newId = trainees.get(trainees.keySet().stream().max(Comparator.naturalOrder()).get()-1).getUserId()+1;
 		}
 		
-		try {
-			selectTrainee(firstName+"."+lastName);
-			trainees.put(newId,new Trainee(firstName,lastName, firstName+"."+lastName+"1", PasswordGenerator.generatePassword(), dateOfBirth, address, newId));
+		Long num = selectSimilarTrainees(firstName+"."+lastName);
+		
+		if(num>0){
+			trainees.put(newId,new Trainee(firstName,lastName, firstName+"."+lastName+(num), PasswordGenerator.generatePassword(), dateOfBirth, address, newId));
 
-		}catch(NoSuchElementException e) {
+		}else {
 			trainees.put(newId,new Trainee(firstName,lastName, firstName+"."+lastName, PasswordGenerator.generatePassword(), dateOfBirth, address, newId));
 
 		}
@@ -61,6 +62,13 @@ public class TraineeDAO {
 		  .filter(k -> trainees.get(k).getUsername().equals(username))
 		  .findFirst().map(k -> trainees.get(k))
 		  .get();
+	}
+	
+	//get similar trainees num
+	private Long selectSimilarTrainees(String username) {
+		return trainees.keySet().stream()
+				.filter(k -> trainees.get(k).getUsername().matches(username))
+				.count();
 	}
 	
 	//get trainee map

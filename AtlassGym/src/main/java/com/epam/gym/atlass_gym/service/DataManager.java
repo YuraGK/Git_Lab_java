@@ -39,8 +39,6 @@ public class DataManager {
 	private Logger logger;
 
 	
-	public String trainerData;
-	
 	public boolean saveTraineeData() {
 		
 		List<String> data = new LinkedList<>();
@@ -139,7 +137,7 @@ public class DataManager {
 			Scanner myReader = new Scanner(new File(TRAINING_DATA_FILE));
 			while (myReader.hasNextLine()) {
 				String[] data = myReader.nextLine().split(" ");
-				Training training = new Training(Arrays.asList(data[1].split(":")), Arrays.asList(data[2].split(":")),data[3],new Training_type(data[2]),Long.parseLong(data[3]));
+				Training training = new Training(Arrays.asList(data[1].split(":")), Arrays.asList(data[2].split(":")),data[3],new Training_type(data[4]),Long.parseLong(data[5]));
 				trainingDAO.createTraining(training);
 			}
 			myReader.close();

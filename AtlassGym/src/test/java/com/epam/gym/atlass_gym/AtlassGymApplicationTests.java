@@ -2,10 +2,12 @@ package com.epam.gym.atlass_gym;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import com.epam.gym.atlass_gym.model.Trainee;
 import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
+import com.epam.gym.atlass_gym.service.DataManager;
 import com.epam.gym.atlass_gym.service.TraineeService;
 import com.epam.gym.atlass_gym.service.TrainerService;
 import com.epam.gym.atlass_gym.service.TrainingService;
@@ -46,6 +49,9 @@ class AtlassGymApplicationTests {
 	
 	@Autowired
 	private TraineeService traineeService;
+	
+	@Autowired
+	private DataManager dataManager;
 	
 	private String[][] dataTrainee = {};
 	private String[][] dataTrainer = {};
@@ -78,6 +84,7 @@ class AtlassGymApplicationTests {
 	
 
 	@Test
+	@Order(1)
 	void testTraineeServiceCreate() {
 		
 		for(String[] data : dataTrainee) {
@@ -89,6 +96,7 @@ class AtlassGymApplicationTests {
 	}
 	
 	@Test
+	@Order(2)
 	void testTraineeServiceUpdate() {
 		
 		Trainee trainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][2],dataTrainee[0][3],LocalDateTime.parse(dataTrainee[0][4]),dataTrainee[0][5],Long.parseLong(dataTrainee[0][6]));
@@ -105,6 +113,7 @@ class AtlassGymApplicationTests {
 	}
 	
 	@Test
+	@Order(3)
 	void testTraineeServiceDelete() {
 		
 		Trainee trainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][2],dataTrainee[0][3],LocalDateTime.parse(dataTrainee[0][4]),dataTrainee[0][5],Long.parseLong(dataTrainee[0][6]));
@@ -119,6 +128,7 @@ class AtlassGymApplicationTests {
 	
 	
 	@Test
+	@Order(1)
 	void testTrainerServiceCreate() {
 		
 		for(String[] data : dataTrainer) {
@@ -130,6 +140,7 @@ class AtlassGymApplicationTests {
 	}
 	
 	@Test
+	@Order(2)
 	void testTrainerServiceUpdate() {
 		
 		Trainer trainer = new Trainer(dataTrainer[0][0], dataTrainer[0][1], dataTrainer[0][2], dataTrainer[0][3], new Training_type(dataTrainer[0][4]), Long.parseLong(dataTrainer[0][5]));
@@ -147,6 +158,7 @@ class AtlassGymApplicationTests {
 	}
 	
 	@Test
+	@Order(1)
 	void testTrainingServiceCreate() {
 		
 		for(String[] data : dataTraining) {
@@ -157,6 +169,44 @@ class AtlassGymApplicationTests {
 			assertEquals(training, trainingService.selectTraining(data[0]));
 		}
 		
+	}
+	
+	@Test
+	@Order(4)
+	void testSaveData() {
+		for(String[] data : dataTrainee) {
+			Trainee trainee = new Trainee(data[0],data[1],data[2],data[3],LocalDateTime.parse(data[4]),data[5],Long.parseLong(data[6]));
+			traineeService.createTrainee(trainee);
+			assertEquals(trainee, traineeService.selectTrainee(data[2]));
+		}
+		
+		for(String[] data : dataTrainer) {
+			Trainer trainer = new Trainer(data[0], data[1], data[2], data[3], new Training_type(data[4]), Long.parseLong(data[5]));
+			trainerService.createTrainer(trainer);
+			assertEquals(trainer, trainerService.selectTrainer(data[2]));
+		}
+		
+		for(String[] data : dataTraining) {
+			Training training = new Training(data[0], new Training_type(data[1]), Long.parseLong(data[2]));
+			trainingService.createTraining(training);
+			assertEquals(training, trainingService.selectTraining(data[0]));
+		}
+		
+		assertTrue(dataManager.saveAllData());
+	}
+	
+	@Test
+	@Order(5)
+	void testRetrieveData() {
+		assertTrue(dataManager.loadAllData());
+		
+		Trainee testTrainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][2],dataTrainee[0][3],LocalDateTime.parse(dataTrainee[0][4]),dataTrainee[0][5],Long.parseLong(dataTrainee[0][6]));
+		Trainer testTrainer = new Trainer(dataTrainer[0][0], dataTrainer[0][1], dataTrainer[0][2], dataTrainer[0][3], new Training_type(dataTrainer[0][4]), Long.parseLong(dataTrainer[0][5]));
+		Training testTraining = new Training(dataTraining[0][0], new Training_type(dataTraining[0][1]), Long.parseLong(dataTraining[0][2]));
+		
+		assertTrue(testTrainee.equals(traineeService.selectTrainee(dataTrainee[0][2])));
+		assertTrue(testTrainer.equals(trainerService.selectTrainer(dataTrainer[0][2])));
+		assertTrue(testTraining.equals(trainingService.selectTraining(dataTraining[0][0])));
 	}
 
 }
