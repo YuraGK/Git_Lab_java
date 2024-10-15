@@ -1,4 +1,4 @@
-package com.epam.gym.atlass_gym.service;
+ 	package com.epam.gym.atlass_gym.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.epam.gym.atlass_gym.dao.TraineeDAO;
@@ -35,8 +36,8 @@ public class DataManager {
 	@Autowired
 	private TraineeDAO traineeDAO;
 	
-	@Autowired
-	private Logger logger;
+	
+	private Logger logger = LoggerFactory.getLogger(DataManager.class);
 
 	
 	public boolean saveTraineeData() {
@@ -44,7 +45,7 @@ public class DataManager {
 		List<String> data = new LinkedList<>();
 		
 		for(Long id : traineeDAO.selectTrainees().keySet()) {
-			data.add(id+" "+traineeDAO.selectTrainees().get(id).toString());
+			data.add(id+" "+getTraineeData(traineeDAO.selectTrainees().get(id)));
 		}
 		
 		try (PrintWriter out = new PrintWriter(TRAINEE_DATA_FILE)) {
@@ -52,7 +53,6 @@ public class DataManager {
 		    logger.info("trainee data saved");
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -63,7 +63,7 @@ public class DataManager {
 		List<String> data = new LinkedList<>();
 		
 		for(Long id : trainerDAO.selectTrainers().keySet()) {
-			data.add(id+" "+trainerDAO.selectTrainers().get(id).toString());
+			data.add(id+" "+getTrainerData(trainerDAO.selectTrainers().get(id)));
 		}
 		
 		try (PrintWriter out = new PrintWriter(TRAINER_DATA_FILE)) {
@@ -71,7 +71,6 @@ public class DataManager {
 		    logger.info("trainer data saved");
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -90,7 +89,6 @@ public class DataManager {
 			logger.info("training data saved");
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -105,7 +103,7 @@ public class DataManager {
 			Scanner myReader = new Scanner(new File(TRAINEE_DATA_FILE));
 			while (myReader.hasNextLine()) {
 				String[] data = myReader.nextLine().split(" ");
-				Trainee trainee = new Trainee(data[1], data[2], data[3], data[4], LocalDateTime.parse(data[5]), data[6], Long.parseLong(data[0]));
+				Trainee trainee = new Trainee(data[1], data[2], data[1]+"."+data[2], LocalDateTime.parse(data[3]), data[4], Long.parseLong(data[0]));
 				traineeDAO.createTrainee(trainee);
 			}
 			myReader.close();
@@ -113,7 +111,6 @@ public class DataManager {
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			logger.error(e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 		
@@ -121,7 +118,7 @@ public class DataManager {
 			Scanner myReader = new Scanner(new File(TRAINER_DATA_FILE));
 			while (myReader.hasNextLine()) {
 				String[] data = myReader.nextLine().split(" ");
-				Trainer trainer = new Trainer(data[1], data[2], data[3], data[4], new Training_type(data[5]), Long.parseLong(data[0]));
+				Trainer trainer = new Trainer(data[1], data[2], data[1]+"."+data[2], new Training_type(data[3]), Long.parseLong(data[0]));
 				trainerDAO.createTrainer(trainer);
 			}
 			myReader.close();
@@ -129,7 +126,6 @@ public class DataManager {
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			logger.error(e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 		
@@ -145,11 +141,16 @@ public class DataManager {
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			logger.error(e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 	
+	private String getTraineeData(Trainee trainee) {
+		return trainee.getFirstName()+" "+trainee.getLastName()+" "+trainee.getDateOfBirth().toString()+" "+trainee.getAddress()+" "+trainee.getUserId();
+	}
 	
+	private String getTrainerData(Trainer trainer) {
+		return trainer.getFirstName()+" "+trainer.getLastName()+" "+trainer.getSpecialisation().getTraining_type()+" "+trainer.getUserId();
+	}
 }

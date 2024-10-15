@@ -59,16 +59,16 @@ class AtlassGymApplicationTests {
 	
 	public AtlassGymApplicationTests() {
 		String[][] dataTrainee = {
-				{"A","B","A.B","fsmk7fgjnk",(LocalDateTime.of(1999, 9, 9, 9, 9).toString()),"Dnipro","1"},
-				{"C","D","C.D","fsmk7fgjnk",(LocalDateTime.of(1986, 9, 9, 9, 8).toString()),"Dnipro","2"},
-				{"E","F","E.F","fsmk7fgjnk",(LocalDateTime.of(1998, 9, 9, 9, 7).toString()),"Dnipro","3"}
+				{"A","B",(LocalDateTime.of(1999, 9, 9, 9, 9).toString()),"Dnipro","1"},
+				{"C","D",(LocalDateTime.of(1986, 9, 9, 9, 8).toString()),"Dnipro","2"},
+				{"E","F",(LocalDateTime.of(1998, 9, 9, 9, 7).toString()),"Dnipro","3"}
 				};
 		this.dataTrainee = dataTrainee;
 		
 		String[][] dataTrainer = {
-				{"A","B","A.B","fsmk7fgjnk","light","1"},
-				{"C","D","C.D","fsmk7fgjnk","light","2"},
-				{"E","F","E.F","fsmk7fgjnk","heavy","3"}
+				{"A","B","light","1"},
+				{"C","D","light","2"},
+				{"E","F","heavy","3"}
 				};
 		this.dataTrainer = dataTrainer;
 		
@@ -88,9 +88,9 @@ class AtlassGymApplicationTests {
 	void testTraineeServiceCreate() {
 		
 		for(String[] data : dataTrainee) {
-			Trainee trainee = new Trainee(data[0],data[1],data[2],data[3],LocalDateTime.parse(data[4]),data[5],Long.parseLong(data[6]));
+			Trainee trainee = new Trainee(data[0],data[1],data[0]+"."+data[1],LocalDateTime.parse(data[2]),data[3],Long.parseLong(data[4]));
 			traineeService.createTrainee(trainee);
-			assertEquals(trainee, traineeService.selectTrainee(data[2]));
+			assertEquals(trainee, traineeService.selectTrainee(data[0]+"."+data[1]));
 		}
 		
 	}
@@ -99,30 +99,30 @@ class AtlassGymApplicationTests {
 	@Order(2)
 	void testTraineeServiceUpdate() {
 		
-		Trainee trainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][2],dataTrainee[0][3],LocalDateTime.parse(dataTrainee[0][4]),dataTrainee[0][5],Long.parseLong(dataTrainee[0][6]));
+		Trainee trainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][0]+"."+dataTrainee[0][1],LocalDateTime.parse(dataTrainee[0][2]),dataTrainee[0][3],Long.parseLong(dataTrainee[0][4]));
 		traineeService.createTrainee(trainee);
-		assertEquals(trainee, traineeService.selectTrainee(dataTrainee[0][2]));
+		assertEquals(trainee, traineeService.selectTrainee(dataTrainee[0][0]+"."+dataTrainee[0][1]));
 		
 		trainee.setFirstName("C");
 		trainee.setLastName("D");
 		trainee.setDateOfBirth(LocalDateTime.of(2000, 5, 5, 5, 5));
 		trainee.setAddress("Kyev");
 		
-		traineeService.updateTrainee(dataTrainee[0][2], "C","D", LocalDateTime.of(2000, 5, 5, 5, 5), "Kyev");
-		assertEquals(trainee, traineeService.selectTrainee(dataTrainee[0][2]));
+		traineeService.updateTrainee(dataTrainee[0][0]+"."+dataTrainee[0][1], "C","D", LocalDateTime.of(2000, 5, 5, 5, 5), "Kyev");
+		assertEquals(trainee, traineeService.selectTrainee(dataTrainee[0][0]+"."+dataTrainee[0][1]));
 	}
 	
 	@Test
 	@Order(3)
 	void testTraineeServiceDelete() {
 		
-		Trainee trainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][2],dataTrainee[0][3],LocalDateTime.parse(dataTrainee[0][4]),dataTrainee[0][5],Long.parseLong(dataTrainee[0][6]));
+		Trainee trainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][0]+"."+dataTrainee[0][1],LocalDateTime.parse(dataTrainee[0][2]),dataTrainee[0][3],Long.parseLong(dataTrainee[0][4]));
 		traineeService.createTrainee(trainee);
-		assertEquals(trainee, traineeService.selectTrainee(dataTrainee[0][2]));
+		assertEquals(trainee, traineeService.selectTrainee(dataTrainee[0][0]+"."+dataTrainee[0][1]));
 		
-		traineeService.deleteTrainee(dataTrainee[0][2]);
+		traineeService.deleteTrainee(dataTrainee[0][0]+"."+dataTrainee[0][1]);
 		
-		assertThrows(NoSuchElementException.class,() ->  traineeService.selectTrainee(dataTrainee[0][2]));
+		assertThrows(NoSuchElementException.class,() ->  traineeService.selectTrainee(dataTrainee[0][0]+"."+dataTrainee[0][1]));
 	}
 	
 	
@@ -132,9 +132,9 @@ class AtlassGymApplicationTests {
 	void testTrainerServiceCreate() {
 		
 		for(String[] data : dataTrainer) {
-			Trainer trainer = new Trainer(data[0], data[1], data[2], data[3], new Training_type(data[4]), Long.parseLong(data[5]));
+			Trainer trainer = new Trainer(data[0], data[1], data[0]+"."+data[1], new Training_type(data[2]), Long.parseLong(data[3]));
 			trainerService.createTrainer(trainer);
-			assertEquals(trainer, trainerService.selectTrainer(data[2]));
+			assertEquals(trainer, trainerService.selectTrainer(data[0]+"."+data[1]));
 		}
 		
 	}
@@ -143,9 +143,9 @@ class AtlassGymApplicationTests {
 	@Order(2)
 	void testTrainerServiceUpdate() {
 		
-		Trainer trainer = new Trainer(dataTrainer[0][0], dataTrainer[0][1], dataTrainer[0][2], dataTrainer[0][3], new Training_type(dataTrainer[0][4]), Long.parseLong(dataTrainer[0][5]));
+		Trainer trainer = new Trainer(dataTrainer[0][0], dataTrainer[0][1], dataTrainer[0][0]+"."+dataTrainer[0][1], new Training_type(dataTrainer[0][2]), Long.parseLong(dataTrainer[0][3]));
 		trainerService.createTrainer(trainer);
-		assertEquals(trainer, trainerService.selectTrainer(dataTrainer[0][2]));
+		assertEquals(trainer, trainerService.selectTrainer(dataTrainer[0][0]+"."+dataTrainer[0][1]));
 		
 		Training_type updatedTrType = new Training_type("plain");
 		
@@ -153,8 +153,8 @@ class AtlassGymApplicationTests {
 		trainer.setLastName("D");
 		trainer.setSpecialisation(updatedTrType);
 		
-		trainerService.updateTrainer(dataTrainer[0][2], "C","D", updatedTrType);
-		assertEquals(trainer, trainerService.selectTrainer(dataTrainer[0][2]));
+		trainerService.updateTrainer(dataTrainer[0][0]+"."+dataTrainer[0][1], "C","D", updatedTrType);
+		assertEquals(trainer, trainerService.selectTrainer(dataTrainer[0][0]+"."+dataTrainer[0][1]));
 	}
 	
 	@Test
@@ -175,15 +175,15 @@ class AtlassGymApplicationTests {
 	@Order(4)
 	void testSaveData() {
 		for(String[] data : dataTrainee) {
-			Trainee trainee = new Trainee(data[0],data[1],data[2],data[3],LocalDateTime.parse(data[4]),data[5],Long.parseLong(data[6]));
+			Trainee trainee = new Trainee(data[0],data[1],data[0]+"."+data[1],LocalDateTime.parse(data[2]),data[3],Long.parseLong(data[4]));
 			traineeService.createTrainee(trainee);
-			assertEquals(trainee, traineeService.selectTrainee(data[2]));
+			assertEquals(trainee, traineeService.selectTrainee(data[0]+"."+data[1]));
 		}
 		
 		for(String[] data : dataTrainer) {
-			Trainer trainer = new Trainer(data[0], data[1], data[2], data[3], new Training_type(data[4]), Long.parseLong(data[5]));
+			Trainer trainer = new Trainer(data[0], data[1], data[0]+"."+data[1], new Training_type(data[2]), Long.parseLong(data[3]));
 			trainerService.createTrainer(trainer);
-			assertEquals(trainer, trainerService.selectTrainer(data[2]));
+			assertEquals(trainer, trainerService.selectTrainer(data[0]+"."+data[1]));
 		}
 		
 		for(String[] data : dataTraining) {
@@ -200,12 +200,12 @@ class AtlassGymApplicationTests {
 	void testRetrieveData() {
 		assertTrue(dataManager.loadAllData());
 		
-		Trainee testTrainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][2],dataTrainee[0][3],LocalDateTime.parse(dataTrainee[0][4]),dataTrainee[0][5],Long.parseLong(dataTrainee[0][6]));
-		Trainer testTrainer = new Trainer(dataTrainer[0][0], dataTrainer[0][1], dataTrainer[0][2], dataTrainer[0][3], new Training_type(dataTrainer[0][4]), Long.parseLong(dataTrainer[0][5]));
+		Trainee testTrainee = new Trainee(dataTrainee[0][0],dataTrainee[0][1],dataTrainee[0][0]+"."+dataTrainee[0][1],LocalDateTime.parse(dataTrainee[0][2]),dataTrainee[0][3],Long.parseLong(dataTrainee[0][4]));
+		Trainer testTrainer = new Trainer(dataTrainer[0][0], dataTrainer[0][1], dataTrainer[0][0]+"."+dataTrainer[0][1], new Training_type(dataTrainer[0][2]), Long.parseLong(dataTrainer[0][3]));
 		Training testTraining = new Training(dataTraining[0][0], new Training_type(dataTraining[0][1]), Long.parseLong(dataTraining[0][2]));
 		
-		assertTrue(testTrainee.equals(traineeService.selectTrainee(dataTrainee[0][2])));
-		assertTrue(testTrainer.equals(trainerService.selectTrainer(dataTrainer[0][2])));
+		assertTrue(testTrainee.getDateOfBirth().equals(traineeService.selectTrainee(dataTrainee[0][0]+"."+dataTrainee[0][1]).getDateOfBirth()));
+		assertTrue(testTrainer.getFirstName().equals(trainerService.selectTrainer(dataTrainer[0][0]+"."+dataTrainer[0][1]).getFirstName()));
 		assertTrue(testTraining.equals(trainingService.selectTraining(dataTraining[0][0])));
 	}
 

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import com.epam.gym.atlass_gym.model.Trainee;
 import com.epam.gym.atlass_gym.service.PasswordGenerator;
@@ -24,13 +23,8 @@ public class TraineeDAO {
 		
 		Long num = selectSimilarTrainees(firstName+"."+lastName);
 		
-		if(num>0){
-			trainees.put(newId,new Trainee(firstName,lastName, firstName+"."+lastName+(num), PasswordGenerator.generatePassword(), dateOfBirth, address, newId));
-
-		}else {
-			trainees.put(newId,new Trainee(firstName,lastName, firstName+"."+lastName, PasswordGenerator.generatePassword(), dateOfBirth, address, newId));
-
-		}
+		
+		trainees.put(newId,new Trainee(firstName,lastName, firstName+"."+lastName+((num>0)?(num):("")), dateOfBirth, address, newId));
 			
 	}
 	
@@ -73,7 +67,9 @@ public class TraineeDAO {
 	
 	//get trainee map
 	public Map<Long, Trainee> selectTrainees() {
-		return trainees;
+		Map<Long, Trainee> temp_map = new HashMap<Long, Trainee>(); 
+		temp_map.putAll(trainees);
+		return temp_map;
 	}
 
 	

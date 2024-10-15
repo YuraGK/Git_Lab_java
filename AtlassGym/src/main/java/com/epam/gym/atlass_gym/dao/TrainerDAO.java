@@ -3,7 +3,6 @@ package com.epam.gym.atlass_gym.dao;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training_type;
@@ -24,14 +23,10 @@ public class TrainerDAO {
 		
 		Long num = selectSimilarTrainers(firstName+"."+lastName);
 		
-		if(num>0){
-			selectTrainer(firstName+"."+lastName);
-			trainers.put(newId, new Trainer(firstName,lastName, firstName+"."+lastName+(num), PasswordGenerator.generatePassword(), specialisation, newId));
-
-		}else{
-			trainers.put(newId, new Trainer(firstName,lastName, firstName+"."+lastName, PasswordGenerator.generatePassword(), specialisation, newId));
-
-		}
+		
+		
+		
+		trainers.put(newId, new Trainer(firstName,lastName, firstName+"."+lastName+((num>0)?(num):("")), specialisation, newId));
 	}
 	
 	public void createTrainer(Trainer trainer) {
@@ -65,7 +60,9 @@ public class TrainerDAO {
 	
 	//get trainer map
 	public Map<Long, Trainer> selectTrainers() {
-		return trainers;
+		Map<Long, Trainer> temp_map = new HashMap<Long, Trainer>(); 
+		temp_map.putAll(trainers);
+		return temp_map;
 	}
 
 	

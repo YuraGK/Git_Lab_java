@@ -3,29 +3,13 @@ package com.epam.gym.atlass_gym.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
 
 public class Training {
 
-	@Getter 
-	@Setter
 	private List<String> traineeId;
-	
-	@Getter 
-	@Setter
 	private List<String> trainerId;
-	
-	@Getter 
-	@Setter
 	private String trainingName;
-	
-	@Getter 
-	@Setter
 	private Training_type trainingType;
-	
-	@Getter 
-	@Setter
 	private Long trainingDuration;
 	
 	public Training() {
@@ -95,4 +79,16 @@ public class Training {
 		
 		return obj.toString().equals(toString());
 	}
+	
+	@Override
+    public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((traineeId == null) ? 0 : traineeId.hashCode());
+		result = prime * result + ((trainerId == null) ? 0 : trainerId.hashCode());
+		result = prime * result + ((trainingName == null) ? 0 : trainingName.hashCode());
+		result = prime * result + ((trainingType == null) ? 0 : trainingType.hashCode());
+		result = prime * result + trainingDuration.intValue();
+		return result;
+    }
 }

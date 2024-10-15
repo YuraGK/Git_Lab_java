@@ -3,6 +3,7 @@ package com.epam.gym.atlass_gym.service;
 import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,8 @@ public class TraineeService {
 	@Autowired
 	private TraineeDAO traineeDAO;
 	
-	@Autowired
-	private Logger logger;
+	
+	private Logger logger= LoggerFactory.getLogger(TraineeService.class);
 
 	//create trainee
 	public void createTrainee(String firstName, String lastName, LocalDateTime dateOfBirth, String address) {
