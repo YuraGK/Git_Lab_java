@@ -12,11 +12,6 @@ public class Training {
 	private Training_type trainingType;
 	private Long trainingDuration;
 	
-	public Training() {
-		traineeId = new LinkedList<String>();
-		trainerId = new LinkedList<String>();
-	}
-	
 	public Training(String trainingName, Training_type trainingType,Long trainingDuration) {
 		traineeId = new LinkedList<String>();
 		trainerId = new LinkedList<String>();
@@ -39,7 +34,12 @@ public class Training {
 	public void setTrainingType(Training_type trainingType) {this.trainingType = trainingType;}
 	public Long getTrainingDuration() {return trainingDuration;}
 	public void setTrainingDuration(Long trainingDuration) {this.trainingDuration = trainingDuration;}
-	
+
+	public List<String> getTraineeIds() {return traineeId;}
+	public void setTraineeIds(List<String> traineeId) {this.traineeId = traineeId;}
+
+	public List<String> getTrainerIds() {return trainerId;}
+	public void setTrainerIds(List<String> trainerId) {this.traineeId = trainerId;}
 	public void addTrainee(String id) {
 		traineeId.stream()
 		  .filter(tId -> id.equals(tId))

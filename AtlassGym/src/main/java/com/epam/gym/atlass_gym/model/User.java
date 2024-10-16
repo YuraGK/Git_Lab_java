@@ -1,5 +1,6 @@
 package com.epam.gym.atlass_gym.model;
 
+import com.epam.gym.atlass_gym.service.PasswordGenerator;
 
 public class User {
 
@@ -12,11 +13,11 @@ public class User {
 	public User() {
 		isActive = true;
 	}
-	public User(String firstName, String lastName, String username, String password) {
+	public User(String firstName, String lastName, String username) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
-		this.password = password;
+		this.password = PasswordGenerator.generatePassword();
 		isActive = true;
 	}
 	

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.epam.gym.atlass_gym.model.Trainee;
-import com.epam.gym.atlass_gym.service.PasswordGenerator;
 
 public class TraineeDAO {
 
@@ -17,15 +16,9 @@ public class TraineeDAO {
 	//create trainee
 	public void createTrainee(String firstName, String lastName, LocalDateTime dateOfBirth, String address) {
 		Long newId = 1L;
-		if(trainees.size()>0) {
-			newId = trainees.get(trainees.keySet().stream().max(Comparator.naturalOrder()).get()-1).getUserId()+1;
-		}
-		
+		if(trainees.size()>0) {newId = trainees.get(trainees.keySet().stream().max(Comparator.naturalOrder()).get()-1).getUserId()+1;}
 		Long num = selectSimilarTrainees(firstName+"."+lastName);
-		
-		
 		trainees.put(newId,new Trainee(firstName,lastName, firstName+"."+lastName+((num>0)?(num):("")), dateOfBirth, address, newId));
-			
 	}
 	
 	public void createTrainee(Trainee trainee) {

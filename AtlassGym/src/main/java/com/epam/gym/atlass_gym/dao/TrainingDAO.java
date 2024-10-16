@@ -3,6 +3,7 @@ package com.epam.gym.atlass_gym.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
 
@@ -30,8 +31,16 @@ public class TrainingDAO {
 				  .get();
 	}
 
+	private Long selectSimilarTrainings(String trainingName) {
+		return trainings.keySet().stream()
+				.filter(k -> trainings.get(k).getTrainingName().matches(trainingName))
+				.count();
+	}
+
 	//get training map
 	public Map<Long, Training> selectTrainings() {
-		return trainings;
+		Map<Long, Training> temp_map = new HashMap<Long, Training>();
+		temp_map.putAll(trainings);
+		return temp_map;
 	}
 }

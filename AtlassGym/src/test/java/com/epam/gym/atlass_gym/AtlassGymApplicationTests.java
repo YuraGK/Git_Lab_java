@@ -1,9 +1,5 @@
 package com.epam.gym.atlass_gym;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
@@ -25,6 +21,9 @@ import com.epam.gym.atlass_gym.service.DataManager;
 import com.epam.gym.atlass_gym.service.TraineeService;
 import com.epam.gym.atlass_gym.service.TrainerService;
 import com.epam.gym.atlass_gym.service.TrainingService;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @ExtendWith(SpringExtension.class)
@@ -80,8 +79,12 @@ class AtlassGymApplicationTests {
 		this.dataTraining = dataTraining;
 		
 	}
-	
-	
+
+	@Test
+	@Order(1)
+	void testStartApp() {
+		AtlassGymApplication.main(new String[]{""});
+	}
 
 	@Test
 	@Order(1)
@@ -90,6 +93,7 @@ class AtlassGymApplicationTests {
 		for(String[] data : dataTrainee) {
 			Trainee trainee = new Trainee(data[0],data[1],data[0]+"."+data[1],LocalDateTime.parse(data[2]),data[3],Long.parseLong(data[4]));
 			traineeService.createTrainee(trainee);
+			System.out.println(trainee.hashCode());
 			assertEquals(trainee, traineeService.selectTrainee(data[0]+"."+data[1]));
 		}
 		
@@ -134,6 +138,7 @@ class AtlassGymApplicationTests {
 		for(String[] data : dataTrainer) {
 			Trainer trainer = new Trainer(data[0], data[1], data[0]+"."+data[1], new Training_type(data[2]), Long.parseLong(data[3]));
 			trainerService.createTrainer(trainer);
+			System.out.println(trainer.hashCode());
 			assertEquals(trainer, trainerService.selectTrainer(data[0]+"."+data[1]));
 		}
 		
@@ -163,12 +168,33 @@ class AtlassGymApplicationTests {
 		
 		for(String[] data : dataTraining) {
 			Training training = new Training(data[0], new Training_type(data[1]), Long.parseLong(data[2]));
-			
 			trainingService.createTraining(training);
-			
+			System.out.println(training.hashCode());
 			assertEquals(training, trainingService.selectTraining(data[0]));
 		}
-		
+
+		trainingService.createTraining(dataTraining[0][0]+"2", new Training_type(dataTraining[0][1]), Long.parseLong(dataTraining[0][2]));
+		assertDoesNotThrow(() ->  trainingService.selectTraining(dataTraining[0][0]+"2"));
+	}
+
+	@Test
+	@Order(2)
+	void testTrainingTrainerTraineeId() {
+		Training training = new Training(dataTraining[0][0]+"1", new Training_type(dataTraining[0][1]), Long.parseLong(dataTraining[0][2]));
+
+		training.addTrainee(dataTrainee[0][4]);
+		training.addTrainer(dataTrainer[0][3]);
+		System.out.println(training.toString());
+		System.out.println(training.getTraineeIds());
+		System.out.println(training.getTrainerIds());
+		trainingService.createTraining(training);
+
+		assertEquals(training, trainingService.selectTraining(dataTraining[0][0]+"1"));
+
+		training.removeTrainee(dataTrainee[0][4]);
+		training.removeTrainer(dataTrainer[0][3]);
+		assertTrue(training.getTraineeIds().size()==0);
+		assertTrue(training.getTrainerIds().size()==0);
 	}
 	
 	@Test

@@ -1,7 +1,5 @@
 package com.epam.gym.atlass_gym.model;
 
-import com.epam.gym.atlass_gym.service.PasswordGenerator;
-
 public class Trainer extends User{
 	
 	
@@ -13,7 +11,7 @@ public class Trainer extends User{
 		super();
 	}
 	public Trainer(String firstName, String lastName, String username, Training_type specialisation, Long userId) {
-		super(firstName, lastName, username, PasswordGenerator.generatePassword());
+		super(firstName, lastName, username);
 		this.specialisation = specialisation;
 		this.userId = userId;
 		

@@ -10,7 +10,7 @@ import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
 
 @Service
-public class TrainingService {
+public class 	TrainingService {
 
 	@Autowired
 	private TrainingDAO trainingDAO;
@@ -24,6 +24,8 @@ public class TrainingService {
 	public void createTraining(Training training) {
 		trainingDAO.createTraining(training);
 		logger.info("Training "+training.getTrainingName()+" created");
+		logger.info(training.getTraineeIds()+"");
+		logger.info(training.getTrainerIds()+"");
 	}
 	public void createTraining(String trainingName,Training_type trainingType,Long trainingDuration) {
 		trainingDAO.createTraining(trainingName, trainingType, trainingDuration);

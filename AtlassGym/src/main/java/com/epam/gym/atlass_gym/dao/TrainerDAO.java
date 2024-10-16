@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training_type;
-import com.epam.gym.atlass_gym.service.PasswordGenerator;
 
 public class TrainerDAO {
 
