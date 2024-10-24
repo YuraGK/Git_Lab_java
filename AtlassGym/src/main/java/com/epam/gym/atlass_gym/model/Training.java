@@ -1,94 +1,141 @@
 package com.epam.gym.atlass_gym.model;
 
-import java.util.LinkedList;
-import java.util.List;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.time.LocalDate;
 
-public class Training {
+@Entity(name = "Training")
+@Table(name = "trainings")
+public class Training implements Serializable {
 
-	private List<String> traineeId;
-	private List<String> trainerId;
-	private String trainingName;
-	private Training_type trainingType;
-	private Long trainingDuration;
-	
-	public Training(String trainingName, Training_type trainingType,Long trainingDuration) {
-		traineeId = new LinkedList<String>();
-		trainerId = new LinkedList<String>();
-		this.trainingName = trainingName;
-		this.trainingType = trainingType;
-		this.trainingDuration = trainingDuration;
-	}
-	
-	public Training(List<String> traineeId, List<String> trainerId,String trainingName,Training_type trainingType,Long trainingDuration) {
-		this.traineeId = traineeId;
-		this.trainerId = trainerId;
-		this.trainingName = trainingName;
-		this.trainingType = trainingType;
-		this.trainingDuration = trainingDuration;
-	}
-	
-	public String getTrainingName() {return trainingName;}
-	public void setTrainingName(String trainingName) {this.trainingName = trainingName;}
-	public Training_type getTrainingType() {return trainingType;}
-	public void setTrainingType(Training_type trainingType) {this.trainingType = trainingType;}
-	public Long getTrainingDuration() {return trainingDuration;}
-	public void setTrainingDuration(Long trainingDuration) {this.trainingDuration = trainingDuration;}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long training_id;
 
-	public List<String> getTraineeIds() {return traineeId;}
-	public void setTraineeIds(List<String> traineeId) {this.traineeId = traineeId;}
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Trainee trainee;
 
-	public List<String> getTrainerIds() {return trainerId;}
-	public void setTrainerIds(List<String> trainerId) {this.traineeId = trainerId;}
-	public void addTrainee(String id) {
-		traineeId.stream()
-		  .filter(tId -> id.equals(tId))
-		  .findAny()
-		  .orElse(traineeId.add(id)+"");
-	}
-	
-	public void removeTrainee(String id) {
-		traineeId.stream()
-		  .filter(tId -> id.equals(tId))
-		  .findFirst()
-		  .ifPresent(tId -> traineeId.remove(id));
-	}
-	
-	public void addTrainer(String id) {
-		trainerId.stream()
-		  .filter(tId -> id.equals(tId))
-		  .findAny()
-		  .orElse(trainerId.add(id)+"");
-	}
-	
-	public void removeTrainer(String id) {
-		trainerId.stream()
-		  .filter(tId -> id.equals(tId))
-		  .findFirst()
-		  .ifPresent(tId -> trainerId.remove(id));
-	}
-	
-	@Override 
-	public String toString() {
-		return String.join(":", traineeId)+" "+String.join(":", trainerId)+" "+trainingName+" "+trainingType.getTraining_type()+" "+trainingDuration; 
-		
-	}
-	
-	@Override 
-	public boolean equals(Object obj) {
-		
-		return obj.toString().equals(toString());
-	}
-	
-	@Override
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Trainer trainer;
+
+    @Column(nullable = false)
+    private String trainingName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Training_type trainingType;
+
+    @Column(nullable = false)
+    private LocalDate trainingDate;
+    @Column(nullable = false)
+    private Long trainingDuration;
+
+    public Training() {
+    }
+
+    public Training(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {
+        this.trainingName = trainingName;
+        this.trainingType = trainingType;
+        this.trainingDuration = trainingDuration;
+        this.trainingDate = trainingDate;
+    }
+
+    public Training(Trainee traineeId, Trainer trainerId, String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {
+        this.trainee = traineeId;
+        this.trainer = trainerId;
+        this.trainingName = trainingName;
+        this.trainingType = trainingType;
+        this.trainingDuration = trainingDuration;
+        this.trainingDate = trainingDate;
+    }
+
+    public Training(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration, Long newId) {
+        this.trainingName = trainingName;
+        this.trainingType = trainingType;
+        this.trainingDuration = trainingDuration;
+        this.trainingDate = trainingDate;
+        this.training_id = newId;
+    }
+
+    public String getTrainingName() {
+        return trainingName;
+    }
+
+    public void setTrainingName(String trainingName) {
+        this.trainingName = trainingName;
+    }
+
+    public Training_type getTrainingType() {
+        return trainingType;
+    }
+
+    public void setTrainingType(Training_type trainingType) {
+        this.trainingType = trainingType;
+    }
+
+    public Long getTrainingDuration() {
+        return trainingDuration;
+    }
+
+    public void setTrainingDuration(Long trainingDuration) {
+        this.trainingDuration = trainingDuration;
+    }
+
+    public Trainee getTraineeIds() {
+        return trainee;
+    }
+
+    public void setTraineeIds(Trainee traineeId) {
+        this.trainee = traineeId;
+    }
+
+    public Trainer getTrainerIds() {
+        return trainer;
+    }
+
+    public void setTrainerIds(Trainer trainerId) {
+        this.trainer = trainerId;
+    }
+
+    @Override
+    public String toString() {
+        return training_id + " " + (trainee == null ? "" : trainee.getId()) + " " + (trainer == null ? "" : trainer.getId()) + " " + trainingName + " " + trainingType.getTraining_type() + " " + trainingDate.toString() + " " + trainingDuration;
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return obj.toString().equals(toString());
+    }
+
+    @Override
     public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((traineeId == null) ? 0 : traineeId.hashCode());
-		result = prime * result + ((trainerId == null) ? 0 : trainerId.hashCode());
-		result = prime * result + ((trainingName == null) ? 0 : trainingName.hashCode());
-		result = prime * result + ((trainingType == null) ? 0 : trainingType.hashCode());
-		result = prime * result + trainingDuration.intValue();
-		return result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + training_id.intValue();
+        result = prime * result + ((trainee == null) ? 0 : trainee.hashCode());
+        result = prime * result + ((trainer == null) ? 0 : trainer.hashCode());
+        result = prime * result + ((trainingName == null) ? 0 : trainingName.hashCode());
+        result = prime * result + ((trainingType == null) ? 0 : trainingType.hashCode());
+        result = prime * result + ((trainingDate == null) ? 0 : trainingDate.hashCode());
+        result = prime * result + trainingDuration.intValue();
+        return result;
+    }
+
+    public Long getId() {
+        return training_id;
+    }
+
+    public void setId(Long id) {
+        this.training_id = id;
+    }
+
+    public LocalDate getTrainingDate() {
+        return trainingDate;
+    }
+
+    public void setTrainingDate(LocalDate trainingDate) {
+        this.trainingDate = trainingDate;
     }
 }

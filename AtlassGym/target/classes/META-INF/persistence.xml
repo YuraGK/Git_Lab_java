@@ -1,0 +1,29 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit
+        name="default"
+        transaction-type="RESOURCE_LOCAL">
+
+        <class>com.epam.gym.atlass_gym.model.Trainee</class>
+        <class>com.epam.gym.atlass_gym.model.Trainer</class>
+        <class>com.epam.gym.atlass_gym.model.Training</class>
+        <class>com.epam.gym.atlass_gym.model.Training_type</class>
+
+        <properties>
+            <property name="hibernate.jdbc.time_zone" value="UTC"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres"/>
+            <property name="jakarta.persistence.jdbc.user" value="newuser"/>
+            <property name="jakarta.persistence.jdbc.password" value="password"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="jakarta.persistence.sql-load-script-source" value="data.sql"/>
+        </properties>
+
+
+    </persistence-unit>
+
+</persistence>
