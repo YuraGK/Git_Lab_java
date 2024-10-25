@@ -30,5 +30,5 @@ public class TrainingRepositoryImpl implements TrainingRepository {
         }
 
         return Optional.empty();
-    }s
+    }
 }

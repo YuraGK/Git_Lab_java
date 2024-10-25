@@ -128,6 +128,9 @@ public class DatabaseTests {
         assertNull(traineeRepository.getTraineeByUsername(genTrainees.get(0).getUsername()));
 
         assertNotNull(traineeRepository.getTrainingsByUsernameAndCriteria(genTrainees.get(0).getUsername(), null, null, null, null));
+        assertNotNull(traineeRepository.changePasswordByUsername(genTrainees.get(1).getUsername(), "doIt2It"));
+        assertNotNull(traineeRepository.toggleActiveByUsername(genTrainees.get(1).getUsername()));
+
         entityManager.close();
         entityManagerFactory.close();
     }
@@ -140,22 +143,42 @@ public class DatabaseTests {
 
         TrainerRepositoryImpl trainerRepository = new TrainerRepositoryImpl(entityManager);
 
+        List<Trainee> genTrainees = generateTrainees();
+
         Trainer trainer1 = new Trainer();
         trainer1.setFirstName("Mary");
         trainer1.setLastName("Doe");
         trainer1.setUsername("Mary.Doe");
+        trainer1.setTrainees(genTrainees);
         //set specialisation
-        Training_type strong = new Training_type("Strong");
+
         Training_type fitness = new Training_type("Fitness");
         trainer1.setSpecialisation(fitness);
         trainerRepository.save(trainer1);
 
 
-        trainer1 = trainerRepository.getTrainerByUsername("Mary.Doe");
+        assertNotNull(trainerRepository.getTrainerByUsername("Mary.Doe"));
         Training_type zoomba = new Training_type("Zoomba");
         trainer1.setSpecialisation(zoomba);
 
         assertTrue(!trainerRepository.save(trainer1).isEmpty());
+
+        Trainer trainer2 = new Trainer();
+        trainer2.setFirstName("Mark");
+        trainer2.setLastName("Maul");
+        trainer2.setUsername("Mark.Maul");
+        Training_type strong = new Training_type("Strong");
+        trainer2.setSpecialisation(strong);
+
+        assertTrue(!trainerRepository.save(trainer2).isEmpty());
+        assertNotNull(trainerRepository.getTrainingsByUsernameAndCriteria("Mary.Doe", null, null, null, null));
+
+        assertNotNull(trainerRepository.changePasswordByUsername("Mark.Maul", "doIt2It"));
+        assertNotNull(trainerRepository.toggleActiveByUsername("Mark.Maul"));
+
+        assertTrue(0 < trainerRepository.getAvailableTrainerListByTraineeUsername(genTrainees.get(0).getUsername()).size());
+        //trainerRepository.getAvailableTrainerListByTraineeUsername(genTrainees.get(0).getUsername()).size();
+
         entityManager.close();
         entityManagerFactory.close();
 

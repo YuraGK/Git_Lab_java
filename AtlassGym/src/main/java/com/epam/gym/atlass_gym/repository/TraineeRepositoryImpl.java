@@ -77,19 +77,42 @@ public class TraineeRepositoryImpl implements TraineeRepository {
         String query = "select training_id, trainingdate, trainingduration, trainingname, trainee_user_id, trainer_user_id, trainingtype_training_type_id from trainings\n" +
                 "   inner join trainees on trainings.trainee_user_id = trainees.user_id\n" +
                 "   inner join users on trainees.user_id = users.user_id\n" +
+                "   inner join training_types on trainings.trainingtype_training_type_id = training_types.training_type_id\n" +
                 "   where users.username = :username";
         if (startDate != null && endDate != null) {
             query = query + " AND (where trainings.trainingdate > :startDate AND where trainings.trainingdate < :endDate)";
         }
         if (trainer_name != null) {
-            query = query + " AND (where trainings.trainingdate > :startDate)";
+            query = query + " AND (where trainings.trainingname = :trainer_name)";
         }
         if (training_type != null) {
-            query = query + " AND (where trainings.trainingdate > :startDate)";
+            query = query + " AND (where training_types.training_type = :training_type)";
         }
         Query jpqlQuery = entityManager.createNativeQuery(query);
         jpqlQuery.setParameter("username", username);
+        if (startDate != null && endDate != null) {
+            jpqlQuery.setParameter("startDate", startDate);
+            jpqlQuery.setParameter("endDate", endDate);
+        }
+        if (trainer_name != null) {
+            jpqlQuery.setParameter("trainer_name", trainer_name);
+        }
+        if (training_type != null) {
+            jpqlQuery.setParameter("training_type", training_type);
+        }
         List<Training> trainings = jpqlQuery.getResultList();
         return trainings;
+    }
+
+    public Optional<Trainee> toggleActiveByUsername(String username) {
+        Trainee trainee = getTraineeByUsername(username);
+        trainee.toggleActive();
+        return save(trainee);
+    }
+
+    public Optional<Trainee> changePasswordByUsername(String username, String newPassword) {
+        Trainee trainee = getTraineeByUsername(username);
+        trainee.setPassword(newPassword);
+        return save(trainee);
     }
 }

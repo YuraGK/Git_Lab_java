@@ -27,10 +27,10 @@ public class Trainer extends User {
             CascadeType.MERGE
     })
     @JoinTable(name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainee_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainer_id"))
+            joinColumns = @JoinColumn(name = "trainer_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainee_id"))
     private List<Trainee> trainees;
-	
+
     public Trainer() {
     }
 
