@@ -15,18 +15,25 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
     EntityManager entityManager;
 
-    public TrainerRepositoryImpl(EntityManager entityManager) {
+    private String username;
+    private String password;
+
+    public TrainerRepositoryImpl(EntityManager entityManager, String username, String password) {
         this.entityManager = entityManager;
+        this.username = username;
+        this.password = password;
     }
 
     @Override
     public Optional<Trainer> save(Trainer trainer) {
         try {
             entityManager.getTransaction().begin();
-            if (trainer.getId() == null) {
+            if (getTrainerByUsername(trainer.getUsername()) == null) {
                 entityManager.persist(trainer);
             } else {
-                trainer = entityManager.merge(trainer);
+                if (authentificate(trainer.getUsername(), trainer.getPassword())) {
+                    trainer = entityManager.merge(trainer);
+                }
             }
             entityManager.getTransaction().commit();
 
@@ -119,14 +126,22 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
     public Optional<Trainer> toggleActiveByUsername(String username) {
         Trainer trainer = getTrainerByUsername(username);
-        trainer.toggleActive();
+        if (authentificate(trainer.getUsername(), trainer.getPassword())) {
+            trainer.toggleActive();
+        }
         return save(trainer);
     }
 
     public Optional<Trainer> changePasswordByUsername(String username, String newPassword) {
         Trainer trainer = getTrainerByUsername(username);
-        trainer.setPassword(newPassword);
+        if (authentificate(trainer.getUsername(), trainer.getPassword())) {
+            trainer.setPassword(newPassword);
+        }
         return save(trainer);
+    }
+
+    private boolean authentificate(String otherUsername, String otherPassword) {
+        return username.equals(otherUsername) && password.equals(otherPassword);
     }
 
 }

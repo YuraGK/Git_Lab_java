@@ -1,6 +1,8 @@
 package com.epam.gym.atlass_gym.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ public class Training implements Serializable {
     private Long training_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Trainee trainee;
 
     @ManyToOne(fetch = FetchType.LAZY)

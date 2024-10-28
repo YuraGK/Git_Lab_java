@@ -59,7 +59,6 @@ public class DatabaseTests {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        TrainerRepositoryImpl trainerRepository = new TrainerRepositoryImpl(entityManager);
 
         //create a new Employee
         Trainer trainer1 = new Trainer();
@@ -84,6 +83,7 @@ public class DatabaseTests {
         trainer1.setTrainees(genTrainees);
         trainer2.setTrainees(genTrainees);
 
+        TrainerRepositoryImpl trainerRepository = new TrainerRepositoryImpl(entityManager, trainer1.getUsername(), trainer1.getPassword());
         //save Employees
         trainerRepository.save(trainer1);
         trainerRepository.save(trainer2);
@@ -107,9 +107,10 @@ public class DatabaseTests {
     public void traineeRepositoryTest() {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        TraineeRepositoryImpl traineeRepository = new TraineeRepositoryImpl(entityManager);
+
 
         List<Trainee> genTrainees = generateTrainees();
+        TraineeRepositoryImpl traineeRepository = new TraineeRepositoryImpl(entityManager, genTrainees.get(0).getUsername(), genTrainees.get(0).getPassword(), true);
         for (Trainee t : genTrainees) {
             traineeRepository.save(t);
         }
@@ -141,7 +142,6 @@ public class DatabaseTests {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        TrainerRepositoryImpl trainerRepository = new TrainerRepositoryImpl(entityManager);
 
         List<Trainee> genTrainees = generateTrainees();
 
@@ -151,6 +151,8 @@ public class DatabaseTests {
         trainer1.setUsername("Mary.Doe");
         trainer1.setTrainees(genTrainees);
         //set specialisation
+
+        TrainerRepositoryImpl trainerRepository = new TrainerRepositoryImpl(entityManager, trainer1.getUsername(), trainer1.getPassword());
 
         Training_type fitness = new Training_type("Fitness");
         trainer1.setSpecialisation(fitness);
