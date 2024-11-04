@@ -1,8 +1,12 @@
 package com.epam.gym.atlass_gym.controller;
 
 
+import com.epam.gym.atlass_gym.model.Trainee;
+import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
+import com.epam.gym.atlass_gym.repository.TraineeRepositoryImpl;
+import com.epam.gym.atlass_gym.repository.TrainerRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainingRepositoryImpl;
 import com.epam.gym.atlass_gym.service.TrainingService;
 import org.slf4j.Logger;
@@ -22,6 +26,10 @@ public class TrainingController {
     private TrainingRepositoryImpl trainingRepository;
     @Autowired
     private TrainingService trainingService;
+    @Autowired
+    private TraineeRepositoryImpl traineeRepository;
+    @Autowired
+    private TrainerRepositoryImpl trainerRepository;
     private Logger logger = LoggerFactory.getLogger(TrainingController.class);
 
     @PostMapping(value = "/add")
@@ -35,8 +43,19 @@ public class TrainingController {
             logger.warn("Insufficient data, missing training name, trainer or trainee, training date, duration");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+        if (traineeRepository.getTraineeByUsername(training.getTraineeIds().getUsername()) == null) {
+            logger.warn("Trying to use non-existent trainee");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        if (trainerRepository.getTrainerByUsername(training.getTrainerIds().getUsername()) == null) {
+            logger.warn("Trying to use non-existent trainer");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        Trainee trainee = traineeRepository.getTraineeByUsername(training.getTraineeIds().getUsername());
+        Trainer trainer = trainerRepository.getTrainerByUsername(training.getTrainerIds().getUsername());
+
         System.out.println(training.getTrainingName() + " " + training.getTrainingType().getTraining_type());
-        Training train = trainingService.createTraining(training.getTrainingName(), training.getTraineeIds(), training.getTrainerIds(), training.getTrainingDate(), training.getTrainingDuration());
+        Training train = trainingService.createTraining(training.getTrainingName(), trainee, trainer, training.getTrainingDate(), training.getTrainingDuration());
         trainingRepository.save(train);
         return new ResponseEntity<>(HttpStatus.OK);
     }
