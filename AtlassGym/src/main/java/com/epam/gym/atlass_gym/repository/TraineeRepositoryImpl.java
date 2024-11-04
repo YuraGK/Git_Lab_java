@@ -20,6 +20,10 @@ public class TraineeRepositoryImpl implements TraineeRepository {
     private String password;
     private boolean isTrainer;
 
+    public TraineeRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     public TraineeRepositoryImpl(EntityManager entityManager, String username, String password, boolean isTrainer) {
         this.entityManager = entityManager;
         this.username = username;
@@ -32,9 +36,9 @@ public class TraineeRepositoryImpl implements TraineeRepository {
         try {
             entityManager.getTransaction().begin();
             if (getTraineeByUsername(trainee.getUsername()) == null) {
-                entityManager.persist(trainee);
+                entityManager.merge(trainee);
             } else {
-                if (authentificate(trainee.getUsername(), trainee.getPassword()) || isTrainer) {
+                if (isTrainer || authentificate(trainee.getUsername(), trainee.getPassword())) {
                     trainee = entityManager.merge(trainee);
                 }
             }
@@ -68,13 +72,14 @@ public class TraineeRepositoryImpl implements TraineeRepository {
 
     @Override
     public void deleteTrainee(Trainee trainee) {
+        Trainee t = entityManager.find(Trainee.class, trainee.getId());
         entityManager.getTransaction().begin();
         System.out.println(trainee);
 
-        if (entityManager.contains(trainee)) {
+        if (entityManager.contains(t)) {
             System.out.println("remove");
-            if (authentificate(trainee.getUsername(), trainee.getPassword()) || isTrainer) {
-                entityManager.remove(trainee);
+            if (isTrainer || authentificate(trainee.getUsername(), trainee.getPassword())) {
+                entityManager.remove(t);
             }
         } else {
             System.out.println("merge");
@@ -117,7 +122,7 @@ public class TraineeRepositoryImpl implements TraineeRepository {
 
     public Optional<Trainee> toggleActiveByUsername(String username) {
         Trainee trainee = getTraineeByUsername(username);
-        if (authentificate(trainee.getUsername(), trainee.getPassword()) || isTrainer) {
+        if (isTrainer || authentificate(trainee.getUsername(), trainee.getPassword())) {
             trainee.toggleActive();
         }
         return save(trainee);
@@ -125,13 +130,29 @@ public class TraineeRepositoryImpl implements TraineeRepository {
 
     public Optional<Trainee> changePasswordByUsername(String username, String newPassword) {
         Trainee trainee = getTraineeByUsername(username);
-        if (authentificate(trainee.getUsername(), trainee.getPassword()) || isTrainer) {
+        if (isTrainer || authentificate(trainee.getUsername(), trainee.getPassword())) {
             trainee.setPassword(newPassword);
+            this.password = newPassword;
         }
         return save(trainee);
     }
 
     private boolean authentificate(String otherUsername, String otherPassword) {
         return username.equals(otherUsername) && password.equals(otherPassword);
+    }
+
+    public boolean authorise(String username, String password) {
+        Trainee t = getTraineeByUsername(username);
+        if (t != null && t.getPassword().equals(password)) {
+            this.username = username;
+            this.password = password;
+            this.isTrainer = false;
+            return true;
+        }
+        return false;
+    }
+
+    public void setTrainer() {
+        this.isTrainer = true;
     }
 }

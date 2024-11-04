@@ -23,11 +23,10 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String password;
     @Column(name = "active", nullable = false)
-    private boolean isActive;
+    private boolean isActive = true;
 
     public User() {
         this.password = PasswordGenerator.generatePassword();
-        isActive = true;
     }
 
     public User(String firstName, String lastName, String username) {
@@ -35,7 +34,6 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.username = username;
         this.password = PasswordGenerator.generatePassword();
-        isActive = true;
     }
 
     public String getFirstName() {

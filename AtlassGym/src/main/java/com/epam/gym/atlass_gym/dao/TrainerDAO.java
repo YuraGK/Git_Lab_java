@@ -15,15 +15,16 @@ public class TrainerDAO {
     }
 
     //create trainer
-    public void createTrainer(String firstName, String lastName, Training_type specialisation) {
+    public Trainer createTrainer(String firstName, String lastName, Training_type specialisation) {
         Long newId = 1L;
         if (trainers.size() > 0) {
             newId = trainers.get(trainers.keySet().stream().max(Comparator.naturalOrder()).get() - 1).getId() + 1;
         }
 
         Long num = selectSimilarTrainers(firstName + "." + lastName);
-
-        trainers.put(newId, new Trainer(firstName, lastName, firstName + "." + lastName + ((num > 0) ? (num) : ("")), specialisation, newId));
+        Trainer outP = new Trainer(firstName, lastName, firstName + "." + lastName + ((num > 0) ? (num) : ("")), specialisation, newId);
+        trainers.put(newId, outP);
+        return outP;
     }
 
     public void createTrainer(Trainer trainer) {

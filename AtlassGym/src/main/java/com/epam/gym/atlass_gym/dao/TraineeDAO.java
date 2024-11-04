@@ -15,13 +15,15 @@ public class TraineeDAO {
     }
 
     //create trainee
-    public void createTrainee(String firstName, String lastName, LocalDate dateOfBirth, String address) {
+    public Trainee createTrainee(String firstName, String lastName, LocalDate dateOfBirth, String address) {
         Long newId = 1L;
         if (trainees.size() > 0) {
             newId = trainees.get(trainees.keySet().stream().max(Comparator.naturalOrder()).get() - 1).getId() + 1;
         }
         Long num = selectSimilarTrainees(firstName + "." + lastName);
-        trainees.put(newId, new Trainee(firstName, lastName, firstName + "." + lastName + ((num > 0) ? (num) : ("")), dateOfBirth, address, newId));
+        Trainee t = new Trainee(firstName, lastName, firstName + "." + lastName + ((num > 0) ? (num) : ("")), dateOfBirth, address, newId);
+        trainees.put(newId, t);
+        return t;
     }
 
     public void createTrainee(Trainee trainee) {

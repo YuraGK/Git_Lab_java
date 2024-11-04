@@ -1,6 +1,8 @@
 package com.epam.gym.atlass_gym.service;
 
 import com.epam.gym.atlass_gym.dao.TrainingDAO;
+import com.epam.gym.atlass_gym.model.Trainee;
+import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
 import org.slf4j.Logger;
@@ -28,9 +30,14 @@ public class TrainingService {
         logger.info(training.getId() + "");
     }
 
-    public void createTraining(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {
-        trainingDAO.createTraining(trainingName, trainingType, trainingDate, trainingDuration);
+    public Training createTraining(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {
         logger.info("Training " + trainingName + " created");
+        return trainingDAO.createTraining(trainingName, trainingType, trainingDate, trainingDuration);
+    }
+
+    public Training createTraining(String trainingName, Trainee trainee, Trainer trainer, LocalDate trainingDate, Long trainingDuration) {
+        logger.info("Training " + trainingName + " created");
+        return trainingDAO.createTraining(trainingName, trainee, trainer, trainingDate, trainingDuration);
     }
 
     public Training selectTraining(String trainingName) {

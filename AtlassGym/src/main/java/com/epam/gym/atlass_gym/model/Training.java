@@ -1,5 +1,6 @@
 package com.epam.gym.atlass_gym.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -29,6 +30,7 @@ public class Training implements Serializable {
     private Training_type trainingType;
 
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate trainingDate;
     @Column(nullable = false)
     private Long trainingDuration;
@@ -43,13 +45,14 @@ public class Training implements Serializable {
         this.trainingDate = trainingDate;
     }
 
-    public Training(Trainee traineeId, Trainer trainerId, String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {
+    public Training(Trainee traineeId, Trainer trainerId, String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration, Long newId) {
         this.trainee = traineeId;
         this.trainer = trainerId;
         this.trainingName = trainingName;
         this.trainingType = trainingType;
         this.trainingDuration = trainingDuration;
         this.trainingDate = trainingDate;
+        this.training_id = newId;
     }
 
     public Training(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration, Long newId) {

@@ -1,5 +1,7 @@
 package com.epam.gym.atlass_gym.dao;
 
+import com.epam.gym.atlass_gym.model.Trainee;
+import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
 
@@ -15,10 +17,20 @@ public class TrainingDAO {
     }
 
     //create training
-    public void createTraining(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {
+    public Training createTraining(String trainingName, Trainee trainee, Trainer trainer, LocalDate trainingDate, Long trainingDuration) {
         Long newId = (trainings.size()) + 1L;
         System.out.println(newId + "+" + trainings.size());
-        trainings.put((long) trainings.size(), new Training(trainingName, trainingType, trainingDate, trainingDuration, newId));
+        Training t = new Training(trainee, trainer, trainingName, trainer.getSpecialisation(), trainingDate, trainingDuration, newId);
+        trainings.put((long) trainings.size(), t);
+        return t;
+    }
+
+    public Training createTraining(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {
+        Long newId = (trainings.size()) + 1L;
+        System.out.println(newId + "+" + trainings.size());
+        Training t = new Training(trainingName, trainingType, trainingDate, trainingDuration, newId);
+        trainings.put((long) trainings.size(), t);
+        return t;
     }
 
     public void createTraining(Training training) {

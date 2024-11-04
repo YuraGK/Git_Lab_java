@@ -20,9 +20,9 @@ public class TrainerService {
     }
 
     //create trainer
-    public void createTrainer(String firstName, String lastName, Training_type specialisation) {
-        trainerDAO.createTrainer(firstName, lastName, specialisation);
+    public Trainer createTrainer(String firstName, String lastName, Training_type specialisation) {
         logger.info("Trainer " + firstName + " " + lastName + " created");
+        return trainerDAO.createTrainer(firstName, lastName, specialisation);
     }
 
     public void createTrainer(Trainer trainer) {

@@ -18,9 +18,9 @@ public class TraineeService {
     private Logger logger = LoggerFactory.getLogger(TraineeService.class);
 
     //create trainee
-    public void createTrainee(String firstName, String lastName, LocalDate dateOfBirth, String address) {
-        traineeDAO.createTrainee(firstName, lastName, dateOfBirth, address);
+    public Trainee createTrainee(String firstName, String lastName, LocalDate dateOfBirth, String address) {
         logger.info("Trainee " + firstName + " " + lastName + " created");
+        return traineeDAO.createTrainee(firstName, lastName, dateOfBirth, address);
     }
 
     public void createTrainee(Trainee trainee) {

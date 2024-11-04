@@ -1,5 +1,6 @@
 package com.epam.gym.atlass_gym.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class Trainee extends User {
     @Column(name = "trainee_id")
     private Long id;
     @Column
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     @Column
     private String address;

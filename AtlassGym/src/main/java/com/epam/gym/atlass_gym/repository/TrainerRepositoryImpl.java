@@ -18,6 +18,10 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     private String username;
     private String password;
 
+    public TrainerRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     public TrainerRepositoryImpl(EntityManager entityManager, String username, String password) {
         this.entityManager = entityManager;
         this.username = username;
@@ -75,7 +79,6 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         return getTrainerListFromObjectArrays(resultList);
     }
 
-    //17. Get trainers list that not assigned on trainee by trainee's username.
     private List<Trainer> getTrainerListFromObjectArrays(List<Object[]> obList) {
         List<Trainer> trainers = new ArrayList<Trainer>();
         for (Object[] list : obList) {
@@ -136,12 +139,23 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         Trainer trainer = getTrainerByUsername(username);
         if (authentificate(trainer.getUsername(), trainer.getPassword())) {
             trainer.setPassword(newPassword);
+            this.password = newPassword;
         }
         return save(trainer);
     }
 
     private boolean authentificate(String otherUsername, String otherPassword) {
         return username.equals(otherUsername) && password.equals(otherPassword);
+    }
+
+    public boolean authorise(String username, String password) {
+        Trainer t = getTrainerByUsername(username);
+        if (t != null && t.getPassword().equals(password)) {
+            this.username = username;
+            this.password = password;
+            return true;
+        }
+        return false;
     }
 
 }

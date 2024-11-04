@@ -26,6 +26,10 @@ public class Training_type implements Serializable {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTraining_type() {
         return training_type;
     }

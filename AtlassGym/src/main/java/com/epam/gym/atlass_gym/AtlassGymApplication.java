@@ -28,6 +28,15 @@ public class AtlassGymApplication {
         entityManager = entityManagerFactory.createEntityManager();
 
 
+        SpringApplication.run(AtlassGymApplication.class, args);
+
+        entityManager.close();
+        entityManagerFactory.close();
+    }
+
+
+    private static void uploadTestDataToDatabase() {
+
         //create a new Employee
         Trainer trainer1 = new Trainer();
         trainer1.setFirstName("Mary");
@@ -67,10 +76,6 @@ public class AtlassGymApplication {
         training.setTraineeIds(genTrainees.get(0));
         trainingRepository.save(training);
 
-        SpringApplication.run(AtlassGymApplication.class, args);
-
-        entityManager.close();
-        entityManagerFactory.close();
     }
 
     private static List<Trainee> generateTrainees() {
