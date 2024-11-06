@@ -2,13 +2,11 @@ package com.epam.gym.atlass_gym.model.mapped;
 
 import com.epam.gym.atlass_gym.model.Trainer;
 
-import java.util.List;
-
 public class TraineesTrainersList {
     private String login;
-    private List<Trainer> trainers;
+    private Trainer[] trainers;
 
-    public TraineesTrainersList(String login, List<Trainer> trainers) {
+    public TraineesTrainersList(String login, Trainer[] trainers) {
         this.login = login;
         this.trainers = trainers;
     }
@@ -17,15 +15,7 @@ public class TraineesTrainersList {
         return login;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public List<Trainer> getTrainers() {
+    public Trainer[] getTrainers() {
         return trainers;
-    }
-
-    public void setTrainers(List<Trainer> trainers) {
-        this.trainers = trainers;
     }
 }

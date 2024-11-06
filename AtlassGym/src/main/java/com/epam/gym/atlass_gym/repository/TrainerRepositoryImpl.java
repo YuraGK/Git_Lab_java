@@ -1,20 +1,21 @@
 package com.epam.gym.atlass_gym.repository;
 
+import com.epam.gym.atlass_gym.model.Trainee;
 import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 public class TrainerRepositoryImpl implements TrainerRepository {
 
     EntityManager entityManager;
-
+    @Autowired
+    TraineeRepositoryImpl traineeRepository;
     private String username;
     private String password;
 
@@ -33,9 +34,11 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         try {
             entityManager.getTransaction().begin();
             if (getTrainerByUsername(trainer.getUsername()) == null) {
-                entityManager.persist(trainer);
+                entityManager.merge(trainer);
             } else {
                 if (authentificate(trainer.getUsername(), trainer.getPassword())) {
+                    Long id = getTrainerByUsername(trainer.getUsername()).getId();
+                    trainer.setId(id);
                     trainer = entityManager.merge(trainer);
                 }
             }
@@ -64,19 +67,63 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
     public List<Trainer> getAvailableTrainerListByTraineeUsername(String username) {
 
-        Query nativeQuery = entityManager.createNativeQuery(
-                "select trainers.user_id, users.firstname, users.lastname, training_types.training_type, users.active, users.password, users.username from trainers\n" +
-                        "inner join users on trainers.user_id = users.user_id\n" +
-                        "inner join training_types on trainers.specialisation_training_type_id = training_types.training_type_id\n" +
-                        "inner join trainee_trainer on trainers.user_id = trainee_trainer.trainer_id\n" +
-                        "inner join trainees on trainee_trainer.trainee_id = trainees.user_id\n" +
-                        "where username != :username AND users.user_id != trainees.user_id AND users.user_id = trainers.user_id\n" +
-                        "group by trainers.user_id, users.firstname, users.lastname, training_types.training_type, users.active, users.password, users.username");
+
+        Query nativeQuery = entityManager.createNativeQuery("select trainees.user_id, users.firstname, users.lastname, trainees.address, trainees.dateofbirth, users.active, users.password, users.username from trainees \n" +
+                "inner join users on trainees.user_id = users.user_id\n" +
+                "where username = :username");
         nativeQuery.setParameter("username", username);
-
         List<Object[]> resultList = nativeQuery.getResultList();
+        List<Trainee> trainees = new ArrayList<Trainee>();
+        for (Object[] list : resultList) {
 
-        return getTrainerListFromObjectArrays(resultList);
+            Trainee temp = new Trainee(list[1].toString(), list[2].toString(), list[7].toString(), LocalDate.parse(list[4].toString()), list[3].toString(), Long.parseLong(list[0].toString()));
+            if (list[5].toString() == "false") temp.toggleActive();
+            temp.setPassword(list[6].toString());
+            trainees.add(temp);
+        }
+
+        Long traineeId = trainees.get(0).getId();
+
+
+        String stringQuery = "select trainers.user_id, users.firstname, users.lastname, training_types.training_type, users.active, users.password, users.username from trainers\n" +
+                "inner join users on trainers.user_id = users.user_id\n" +
+                "inner join training_types on trainers.specialisation_training_type_id = training_types.training_type_id";
+
+        Query relationsQuery = entityManager.createNativeQuery("select * from trainee_trainer");
+        List<Object[]> relationsList = relationsQuery.getResultList();
+
+        StringJoiner temp = new StringJoiner(" and");
+
+        for (Object[] map : relationsList) {
+            if (map[1].toString().equals(traineeId.toString())) {
+                temp.add(" trainers.user_id <> " + map[0].toString());
+            }
+
+        }
+        if (temp.length() > 0) {
+            stringQuery = stringQuery + " where" + temp.toString();
+        }
+
+        Query nQuery = entityManager.createNativeQuery(stringQuery);
+
+        List<Object[]> rList = nQuery.getResultList();
+        return getTrainerListFromObjectArrays(rList);
+    }
+
+    private List<String> getStringListFromObjectArrays(List<Object[]> obList) {
+        List<String> trainers = new ArrayList<String>();
+        for (Object list : obList) {
+            trainers.add(list.toString());
+        }
+        return trainers;
+    }
+
+    private List<Long> getIdListFromObjectArrays(List<Object[]> obList) {
+        List<Long> trainers = new ArrayList<Long>();
+        for (Object list : obList) {
+            trainers.add(Long.parseLong(list.toString()));
+        }
+        return trainers;
     }
 
     private List<Trainer> getTrainerListFromObjectArrays(List<Object[]> obList) {

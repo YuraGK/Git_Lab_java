@@ -32,7 +32,7 @@ public class LoginController {
     public ResponseEntity login(@RequestBody LoginPassword loginPassword) {
         if (loginPassword == null || loginPassword.getLogin() == null || loginPassword.getPassword() == null) {
             logger.warn("Insufficient data, missing login or password");
-            return null;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         System.out.println(loginPassword.getLogin() + " " + loginPassword.getPassword());
         if (traineeRepository.authorise(loginPassword.getLogin(), loginPassword.getPassword())) {
@@ -48,13 +48,15 @@ public class LoginController {
     public ResponseEntity changeLogin(@RequestBody LoginPasswordChange loginPassword) {
         if (loginPassword == null || loginPassword.getLogin() == null || loginPassword.getPassword() == null || loginPassword.getNewPassword() == null) {
             logger.warn("Insufficient data, missing login or password");
-            return null;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         try {
+            System.out.println("Login tainee");
             traineeService.selectTrainee(loginPassword.getLogin()).setPassword(loginPassword.getNewPassword());
             return traineeRepository.changePasswordByUsername(loginPassword.getLogin(), loginPassword.getNewPassword()).isEmpty() ? new ResponseEntity(HttpStatus.FORBIDDEN) : new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             try {
+                System.out.println("Login tainer");
                 trainerService.selectTrainer(loginPassword.getLogin()).setPassword(loginPassword.getNewPassword());
                 return trainerRepository.changePasswordByUsername(loginPassword.getLogin(), loginPassword.getNewPassword()).isEmpty() ? new ResponseEntity(HttpStatus.FORBIDDEN) : new ResponseEntity(HttpStatus.OK);
             } catch (Exception ex) {

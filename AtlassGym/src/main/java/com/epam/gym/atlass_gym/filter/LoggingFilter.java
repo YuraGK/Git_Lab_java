@@ -16,7 +16,7 @@ public class LoggingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        // Initialization logic if needed
+
     }
 
     @Override
@@ -28,8 +28,5 @@ public class LoggingFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    @Override
-    public void destroy() {
-        // Cleanup logic if needed
-    }
+
 }

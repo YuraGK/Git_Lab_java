@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -139,7 +140,7 @@ public class TraineeController {
     }
 
     @PutMapping(value = "/updateTraineesTrainersList")
-    public List<Trainer> updateTraineesTrainersList(@RequestBody TraineesTrainersList traineesTrainersList) {
+    public Trainer[] updateTraineesTrainersList(@RequestBody TraineesTrainersList traineesTrainersList) {
         System.out.println(traineesTrainersList.getTrainers());
         if (traineesTrainersList == null || traineesTrainersList.getLogin() == null || traineesTrainersList.getTrainers() == null) {
             logger.warn("Insufficient data, missing username or trainers list");
@@ -152,13 +153,13 @@ public class TraineeController {
         }
         Trainee t = new Trainee();
         try {
-            traineeService.selectTrainee(traineesTrainersList.getLogin()).setTrainers(traineesTrainersList.getTrainers());
+            traineeService.selectTrainee(traineesTrainersList.getLogin()).setTrainers(Arrays.stream(traineesTrainersList.getTrainers()).toList());
             t = traineeService.selectTrainee(traineesTrainersList.getLogin());
             traineeRepository.save(t);
         } catch (Exception e) {
             //
             t = traineeRepository.getTraineeByUsername(traineesTrainersList.getLogin());
-            t.setTrainers(traineesTrainersList.getTrainers());
+            t.setTrainers(Arrays.stream(traineesTrainersList.getTrainers()).toList());
             traineeRepository.save(t);
 
         }

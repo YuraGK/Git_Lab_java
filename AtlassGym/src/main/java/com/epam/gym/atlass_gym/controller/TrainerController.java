@@ -127,13 +127,13 @@ public class TrainerController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        if (traineeRepository.getTraineeByUsername(user.getUsername()) == null) {
-            logger.warn("Trying to update non-existent trainee");
+        if (trainerRepository.getTrainerByUsername(user.getUsername()) == null) {
+            logger.warn("Trying to update non-existent trainer");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        boolean userIsActive = traineeRepository.getTraineeByUsername(user.getUsername()).isActive();
+        boolean userIsActive = trainerRepository.getTrainerByUsername(user.getUsername()).isActive();
         if (user.isActive() != userIsActive) {
-            traineeRepository.toggleActiveByUsername(user.getUsername());
+            trainerRepository.toggleActiveByUsername(user.getUsername());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

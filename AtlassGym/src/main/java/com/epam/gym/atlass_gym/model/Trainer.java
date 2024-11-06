@@ -44,6 +44,10 @@ public class Trainer extends User {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Training_type getSpecialisation() {
         return specialisation;
     }
@@ -71,7 +75,7 @@ public class Trainer extends User {
         result = prime * result + ((super.getUsername() == null) ? 0 : super.getUsername().hashCode());
         result = prime * result + ((super.getPassword() == null) ? 0 : super.getPassword().hashCode());
         result = prime * result + ((specialisation == null) ? 0 : specialisation.hashCode());
-        result = prime * result + id.intValue();
+        result = prime * result + ((id == null) ? 0 : id.intValue());
         return result;
     }
 

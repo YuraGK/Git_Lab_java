@@ -21,8 +21,10 @@ public class TrainingRepositoryImpl implements TrainingRepository {
     public Optional<Training> save(Training training) {
         try {
             entityManager.getTransaction().begin();
-            if (training.getId() == null) {
-                entityManager.persist(training);
+            System.out.println(training.toString());
+            if (!existsTrainingByName(training.getTrainingName())) {
+                System.out.println("Training merge");
+                entityManager.merge(training);
             } else {
                 return Optional.empty();
             }
@@ -54,5 +56,13 @@ public class TrainingRepositoryImpl implements TrainingRepository {
             System.out.println();
         }
         return types;
+    }
+
+    private boolean existsTrainingByName(String name) {
+        Query nativeQuery = entityManager.createNativeQuery("select * from trainings \n" +
+                "where trainingname = :name");
+        nativeQuery.setParameter("name", name);
+        List<Object[]> resultList = nativeQuery.getResultList();
+        return (resultList.size() == 0) ? false : true;
     }
 }

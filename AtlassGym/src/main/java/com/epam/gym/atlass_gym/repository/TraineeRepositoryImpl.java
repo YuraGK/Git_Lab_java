@@ -39,6 +39,8 @@ public class TraineeRepositoryImpl implements TraineeRepository {
                 entityManager.merge(trainee);
             } else {
                 if (isTrainer || authentificate(trainee.getUsername(), trainee.getPassword())) {
+                    Long id = getTraineeByUsername(trainee.getUsername()).getId();
+                    trainee.setId(id);
                     trainee = entityManager.merge(trainee);
                 }
             }
@@ -81,9 +83,6 @@ public class TraineeRepositoryImpl implements TraineeRepository {
             if (isTrainer || authentificate(trainee.getUsername(), trainee.getPassword())) {
                 entityManager.remove(t);
             }
-        } else {
-            System.out.println("merge");
-            entityManager.merge(trainee);
         }
 
         entityManager.getTransaction().commit();
