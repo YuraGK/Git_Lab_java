@@ -16,17 +16,23 @@ public class Training implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long training_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE})
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Trainee trainee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE})
     private Trainer trainer;
 
     @Column(nullable = false)
     private String trainingName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE})
     private Training_type trainingType;
 
     @Column(nullable = false)

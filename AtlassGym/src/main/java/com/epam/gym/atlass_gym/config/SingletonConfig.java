@@ -78,5 +78,5 @@ public class SingletonConfig {
     public TrainingRepositoryImpl trainingRepository() {
         return new TrainingRepositoryImpl(entityManager());
     }
-
+    
 }

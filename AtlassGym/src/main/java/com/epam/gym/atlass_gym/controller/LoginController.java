@@ -11,10 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping(value = "/login", consumes = {"application/JSON"}, produces = {"application/JSON", "application/XML"})
+@Controller
+@RequestMapping
 public class LoginController {
 
     @Autowired
@@ -28,7 +29,17 @@ public class LoginController {
 
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @GetMapping()
+    @GetMapping(value = "/")
+    public String index() {
+        return "index";
+    }
+
+    @GetMapping(value = "/login")
+    public String getLogin() {
+        return "login";
+    }
+
+    @PostMapping(value = "/login", consumes = {"application/JSON"}, produces = {"application/JSON", "application/XML"})
     public ResponseEntity login(@RequestBody LoginPassword loginPassword) {
         if (loginPassword == null || loginPassword.getLogin() == null || loginPassword.getPassword() == null) {
             logger.warn("Insufficient data, missing login or password");
@@ -44,7 +55,7 @@ public class LoginController {
         return new ResponseEntity(HttpStatus.FORBIDDEN);
     }
 
-    @PutMapping(value = "/change")
+    @PutMapping(value = "/login/change", consumes = {"application/JSON"}, produces = {"application/JSON", "application/XML"})
     public ResponseEntity changeLogin(@RequestBody LoginPasswordChange loginPassword) {
         if (loginPassword == null || loginPassword.getLogin() == null || loginPassword.getPassword() == null || loginPassword.getNewPassword() == null) {
             logger.warn("Insufficient data, missing login or password");

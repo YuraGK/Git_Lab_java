@@ -1,0 +1,33 @@
+spring:
+  active:
+    profiles: local
+server:
+  port: 8081
+---
+spring:
+  active:
+    profiles: dev
+  jpa:
+    database: postgresql
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
+---
+spring:
+  active:
+    profiles: stg
+server:
+  port: 9000
+---
+spring:
+  active:
+    profiles: prod
+server:
+  port: 8000
