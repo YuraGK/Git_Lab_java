@@ -16,7 +16,6 @@ public class LoggingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-
     }
 
     @Override
@@ -27,6 +26,4 @@ public class LoggingFilter implements Filter {
         }
         chain.doFilter(request, response);
     }
-
-
 }

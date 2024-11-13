@@ -36,6 +36,7 @@ public class TraineeRepositoryImpl implements TraineeRepository {
         try {
             entityManager.getTransaction().begin();
             if (getTraineeByUsername(trainee.getUsername()) == null) {
+                System.out.println("Trainee save");
                 entityManager.merge(trainee);
             } else {
                 if (isTrainer || authentificate(trainee.getUsername(), trainee.getPassword())) {
@@ -68,6 +69,7 @@ public class TraineeRepositoryImpl implements TraineeRepository {
             if (list[5].toString() == "false") temp.toggleActive();
             temp.setPassword(list[6].toString());
             trainees.add(temp);
+            System.out.println("Trainee got: " + temp);
         }
         return (trainees.size() == 0) ? null : trainees.get(0);
     }
@@ -137,10 +139,13 @@ public class TraineeRepositoryImpl implements TraineeRepository {
     }
 
     private boolean authentificate(String otherUsername, String otherPassword) {
+        System.out.println(username + " " + password);
+        System.out.println(otherUsername + " " + otherPassword);
         return username.equals(otherUsername) && password.equals(otherPassword);
     }
 
     public boolean authorise(String username, String password) {
+        System.out.println("authorise " + username + " " + password);
         Trainee t = getTraineeByUsername(username);
         if (t != null && t.getPassword().equals(password)) {
             this.username = username;

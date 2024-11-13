@@ -40,40 +40,45 @@ public class LoginController {
     }
 
     @PostMapping(value = "/login", consumes = {"application/JSON"}, produces = {"application/JSON", "application/XML"})
-    public ResponseEntity login(@RequestBody LoginPassword loginPassword) {
+    public String login(@RequestBody LoginPassword loginPassword) {
         if (loginPassword == null || loginPassword.getLogin() == null || loginPassword.getPassword() == null) {
             logger.warn("Insufficient data, missing login or password");
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return "400";
         }
         System.out.println(loginPassword.getLogin() + " " + loginPassword.getPassword());
         if (traineeRepository.authorise(loginPassword.getLogin(), loginPassword.getPassword())) {
-            return new ResponseEntity(HttpStatus.OK);
+            logger.info("Logged as trainee");
+            return "index";
         } else if (trainerRepository.authorise(loginPassword.getLogin(), loginPassword.getPassword())) {
             traineeRepository.setTrainer();
-            return new ResponseEntity(HttpStatus.OK);
+            logger.info("Logged as trainer");
+            return "index";
         }
-        return new ResponseEntity(HttpStatus.FORBIDDEN);
+        return "400";
     }
 
     @PutMapping(value = "/login/change", consumes = {"application/JSON"}, produces = {"application/JSON", "application/XML"})
-    public ResponseEntity changeLogin(@RequestBody LoginPasswordChange loginPassword) {
+    public String changeLogin(@RequestBody LoginPasswordChange loginPassword) {
         if (loginPassword == null || loginPassword.getLogin() == null || loginPassword.getPassword() == null || loginPassword.getNewPassword() == null) {
             logger.warn("Insufficient data, missing login or password");
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return "404";
         }
+        System.out.println(loginPassword.getLogin() + " " + loginPassword.getPassword());
         try {
-            System.out.println("Login tainee");
+            System.out.println("Change Login trainee");
             traineeService.selectTrainee(loginPassword.getLogin()).setPassword(loginPassword.getNewPassword());
-            return traineeRepository.changePasswordByUsername(loginPassword.getLogin(), loginPassword.getNewPassword()).isEmpty() ? new ResponseEntity(HttpStatus.FORBIDDEN) : new ResponseEntity(HttpStatus.OK);
+            System.out.println("Change Login trainee");
+            return traineeRepository.changePasswordByUsername(loginPassword.getLogin(), loginPassword.getNewPassword()).isEmpty() ? "403" : "index";
         } catch (Exception e) {
             try {
-                System.out.println("Login tainer");
+                System.out.println("Change Login trainer");
                 trainerService.selectTrainer(loginPassword.getLogin()).setPassword(loginPassword.getNewPassword());
-                return trainerRepository.changePasswordByUsername(loginPassword.getLogin(), loginPassword.getNewPassword()).isEmpty() ? new ResponseEntity(HttpStatus.FORBIDDEN) : new ResponseEntity(HttpStatus.OK);
+                return trainerRepository.changePasswordByUsername(loginPassword.getLogin(), loginPassword.getNewPassword()).isEmpty() ? "403" : "index";
             } catch (Exception ex) {
 
             }
         }
-        return new ResponseEntity(HttpStatus.FORBIDDEN);
+        return "403";
     }
 }

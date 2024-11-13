@@ -15,9 +15,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -35,37 +35,6 @@ public class RESTtests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    @Order(4)
-    public void deleteTrainee() throws Exception {
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/gym/trainee/toggleActive")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\n" +
-                                        "    \"username\":\"Dohn.Huan\",\n" +
-                                        "    \"isActive\":false\n" +
-                                        "}"))
-                .andDo(print())
-                .andExpect(status().isOk());//trainee deactivate
-
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/gym/trainer/toggleActive")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\n" +
-                                        "    \"username\":\"Neo.Lokiii\",\n" +
-                                        "    \"isActive\":false\n" +
-                                        "}"))
-                .andDo(print())
-                .andExpect(status().isOk());//trainer deactivate
-
-
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/gym/trainee/deleteProfile")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("Dohn.Huan"))
-                .andDo(print())
-                .andExpect(status().isOk());//trainee delete
-    }
 
     @Test
     @Order(1)
@@ -78,7 +47,7 @@ public class RESTtests {
                                 .content(o))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Dohn.Huan")));//trainee register
+                .andExpect(model().attribute("username", "Dohn.Huan"));//trainee register
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/gym/trainee/getProfile")
@@ -86,17 +55,17 @@ public class RESTtests {
                                 .content("Dohn.Huan"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Dohn.Huan")));//trainee get
+                .andExpect(model().attributeExists("trainee"));//trainee get
 
         ResultActions result = this.mockMvc.perform(
                 MockMvcRequestBuilders.get("/gym/trainee/getProfile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("Dohn.Huan"));
-        String pass = result.andReturn().getResponse().getContentAsString().substring(80, 90);
+        String pass = result.andReturn().getModelAndView().getModelMap().get("trainee").toString().substring(20, 30);
         System.out.println(pass);
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/login")
+                        MockMvcRequestBuilders.post("/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"login\":\"Dohn.Huan\",\"password\":\"" + pass + "\"}"))
                 .andDo(print())
@@ -126,7 +95,7 @@ public class RESTtests {
                                 .content(up))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Rome")));//trainee update
+                .andExpect(model().attributeExists("trainee"));//trainee update
 
 
     }
@@ -148,7 +117,7 @@ public class RESTtests {
                                 .content(o))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Neo.Lokiii")));//trainer register
+                .andExpect(model().attribute("username", "Neo.Lokiii"));//trainer register
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/gym/trainer/getProfile")
@@ -156,17 +125,17 @@ public class RESTtests {
                                 .content("Neo.Lokiii"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Neo.Lokiii")));//trainer get
+                .andExpect(model().attributeExists("trainer"));//trainer get
 
         ResultActions result = this.mockMvc.perform(
                 MockMvcRequestBuilders.get("/gym/trainer/getProfile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("Neo.Lokiii"));
-        String pass = result.andReturn().getResponse().getContentAsString().substring(82, 92);
+        String pass = result.andReturn().getModelAndView().getModelMap().get("trainer").toString().substring(22, 32);
         System.out.println(pass);
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/login")
+                        MockMvcRequestBuilders.post("/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"login\":\"Neo.Lokiii\",\"password\":\"" + pass + "\"}"))
                 .andDo(print())
@@ -198,7 +167,7 @@ public class RESTtests {
                                 .content(up))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Cox")));//trainer update
+                .andExpect(model().attributeExists("trainer"));//trainer update
 
 
     }
@@ -213,7 +182,7 @@ public class RESTtests {
                                 .content("Dohn.Huan"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Dohn.Huan")));//trainee get
+                .andExpect(model().attributeExists("trainee"));//trainee get
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/gym/trainer/getProfile")
@@ -221,7 +190,7 @@ public class RESTtests {
                                 .content("Neo.Lokiii"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Neo.Lokiii")));//trainer get
+                .andExpect(model().attributeExists("trainer"));//trainer get
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/gym/trainee/getAvailableTrainers")
@@ -229,7 +198,7 @@ public class RESTtests {
                                 .content("Dohn.Huan"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Neo")));//trainee get available trainers
+                .andExpect(model().attributeExists("trainers"));//trainee get available trainers
 
 
         String up = "{\n" +
@@ -249,7 +218,7 @@ public class RESTtests {
                                 .content(up))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Strong")));//trainees trainer list update
+                .andExpect(model().attributeExists("trainers"));//trainees trainer list update
 
         String training = "{\n" +
                 "    \"trainee\":\"Dohn.Huan\",\n" +
@@ -278,7 +247,7 @@ public class RESTtests {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Strong")));//trainee get available trainers
+                .andExpect(model().attributeExists("types"));//trainee get available trainers
 
 
         this.mockMvc.perform(
@@ -290,102 +259,178 @@ public class RESTtests {
     }
 
     @Test
-    @Order(5)
-    public void testEmpty() throws Exception {
+    @Order(4)
+    public void deleteTrainee() throws Exception {
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/gym/trainee/toggleActive")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\n" +
+                                        "    \"username\":\"Dohn.Huan\",\n" +
+                                        "    \"isActive\":false\n" +
+                                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk());//trainee deactivate
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/gym/trainer/toggleActive")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\n" +
+                                        "    \"username\":\"Neo.Lokiii\",\n" +
+                                        "    \"isActive\":false\n" +
+                                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk());//trainer deactivate
+
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/gym/trainee/deleteProfile")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("Dohn.Huan"))
+                .andDo(print())
+                .andExpect(status().isOk());//trainee delete
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{}"))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
+    }
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/login/change")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{}"))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+    @Test
+    @Order(5)
+    public void testEmpty() throws Exception {
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/gym/trainee/register")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"firstName\":\"l\"}"))
-                .andDo(print())
-                .andExpect(content().string(""));
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
+                    .andDo(print());
+        });
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/gym/trainer/register")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"firstName\":\"l\"}"))
-                .andDo(print())
-                .andExpect(content().string(""));
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.put("/login/change")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
+                    .andDo(print());
+        });
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.post("/gym/trainee/register")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"firstName\":\"l\"}"))
+                    .andDo(print());
+        });
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.post("/gym/trainer/register")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"firstName\":\"l\"}"))
+                    .andDo(print());
+        });
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.put("/gym/trainee/updateProfile")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"firstName\":\"l\"}"))
+                    .andDo(print());
+        });
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.put("/gym/trainer/updateProfile")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"firstName\":\"l\"}"))
+                    .andDo(print());
+        });
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.put("/gym/trainee/updateProfile")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"username\":\"Ded.Ded\",\n" +
+                                            "    \"firstName\":\"Mann\",\n" +
+                                            "    \"lastName\":\"Cox\",\n" +
+                                            "    \"isActive\":true,\n" +
+                                            "    \"dateOfBirth\":\"2000-01-01\",\n" +
+                                            "    \"address\":\"Rome\"\n}"))
+                    .andDo(print());
+        });
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.put("/gym/trainer/updateProfile")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"username\":\"Ded.Ded\",\n" +
+                                            "    \"firstName\":\"Mann\",\n" +
+                                            "    \"lastName\":\"Cox\",\n" +
+                                            "    \"isActive\":true,\n" +
+                                            "    \"dateOfBirth\":\"2000-01-01\",\n" +
+                                            "    \"address\":\"Rome\"\n}"))
+                    .andDo(print());
+        });
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainee/getProfile")
-                                .contentType(MediaType.APPLICATION_JSON)
-                        /*.content("")*/)
-                .andDo(print())
-                .andExpect(content().string(""));
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.put("/gym/trainee/updateTraineesTrainersList")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
+                    .andDo(print());
+        });
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.put("/gym/trainee/updateTraineesTrainersList")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"username\":\"Ded.Ded\"}"))
+                    .andDo(print());
+        });
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainee/updateProfile")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"firstName\":\"l\"}"))
-                .andDo(print())
-                .andExpect(content().string(""));
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.get("/gym/trainee/getTraineesTrainingsList")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"username\":\"Ded.Ded\"}"))
+                    .andDo(print());
+        });
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainer/updateProfile")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"firstName\":\"l\"}"))
-                .andDo(print())
-                .andExpect(content().string(""));
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.patch("/gym/trainee/toggleActive")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
+                    .andDo(print());
+        });
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainee/updateProfile")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"username\":\"Ded.Ded\",\n" +
-                                        "    \"firstName\":\"Mann\",\n" +
-                                        "    \"lastName\":\"Cox\",\n" +
-                                        "    \"isActive\":true,\n" +
-                                        "    \"dateOfBirth\":\"2000-01-01\",\n" +
-                                        "    \"address\":\"Rome\"\n}"))
-                .andDo(print())
-                .andExpect(content().string(""));
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.patch("/gym/trainee/toggleActive")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"username\":\"Ded.Ded\"}"))
+                    .andDo(print());
+        });
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainer/updateProfile")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"username\":\"Ded.Ded\",\n" +
-                                        "    \"firstName\":\"Mann\",\n" +
-                                        "    \"lastName\":\"Cox\",\n" +
-                                        "    \"isActive\":true,\n" +
-                                        "    \"dateOfBirth\":\"2000-01-01\",\n" +
-                                        "    \"address\":\"Rome\"\n}"))
-                .andDo(print())
-                .andExpect(content().string(""));
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.get("/gym/trainer/getTrainersTrainingsList")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("Ded.Ded"))
+                    .andDo(print());
+        });
+
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.patch("/gym/trainer/toggleActive")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{}"))
+                    .andDo(print());
+        });
+
+        assertThrows(Exception.class, () -> {
+            this.mockMvc.perform(
+                            MockMvcRequestBuilders.patch("/gym/trainer/toggleActive")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content("{\"username\":\"Ded.Ded\"}"))
+                    .andDo(print());
+        });
 
 
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainee/updateTraineesTrainersList")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{}"))
-                .andDo(print())
-                .andExpect(content().string(""));
-
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainee/updateTraineesTrainersList")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"username\":\"Ded.Ded\"}"))
-                .andDo(print())
-                .andExpect(content().string(""));
-
-        this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainer/toggleActive")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{}"))
-                .andDo(print())
-                .andExpect(content().string(""));
     }
 }

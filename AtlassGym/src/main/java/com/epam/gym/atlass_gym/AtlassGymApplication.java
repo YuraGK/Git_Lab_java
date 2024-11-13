@@ -16,10 +16,7 @@ public class AtlassGymApplication {
     public static void main(String[] args) {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         entityManager = entityManagerFactory.createEntityManager();
-
-
         SpringApplication.run(AtlassGymApplication.class, args);
-
         entityManager.close();
         entityManagerFactory.close();
     }

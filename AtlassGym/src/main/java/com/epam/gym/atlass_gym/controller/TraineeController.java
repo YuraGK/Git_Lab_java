@@ -1,10 +1,7 @@
 package com.epam.gym.atlass_gym.controller;
 
 import com.epam.gym.atlass_gym.model.Trainee;
-import com.epam.gym.atlass_gym.model.Trainer;
-import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.mapped.ActiveUser;
-import com.epam.gym.atlass_gym.model.mapped.LoginPassword;
 import com.epam.gym.atlass_gym.model.mapped.SimpleTrainee;
 import com.epam.gym.atlass_gym.model.mapped.TraineesTrainersList;
 import com.epam.gym.atlass_gym.repository.TraineeRepositoryImpl;
@@ -16,13 +13,11 @@ import com.epam.gym.atlass_gym.service.TrainingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -45,7 +40,7 @@ public class TraineeController {
     private Logger logger = LoggerFactory.getLogger(TraineeController.class);
 
     @PostMapping(value = "/register")
-    public LoginPassword register(@RequestBody Trainee trainee) {
+    public String register(@RequestBody Trainee trainee, Model model) {
         if (trainee == null || trainee.getFirstName() == null || trainee.getLastName() == null) {
             logger.warn("Insufficient data, missing first or last name");
             return null;
@@ -55,15 +50,13 @@ public class TraineeController {
                 trainee.getDateOfBirth(),
                 trainee.getAddress());
         traineeRepository.save(outTrainee);
-        return new LoginPassword(outTrainee.getUsername(), outTrainee.getPassword());
+        model.addAttribute("username", outTrainee.getUsername());
+        model.addAttribute("password", outTrainee.getPassword());
+        return "index";
     }
 
     @GetMapping(value = "/getProfile")
-    public Trainee getProfile(@RequestBody String username) {
-        if (username == null) {
-            logger.warn("Insufficient data, missing username");
-            return null;
-        }
+    public String getProfile(@RequestBody String username, Model model) {
         System.out.println(username);
         Trainee trainee = null;
         try {
@@ -71,17 +64,16 @@ public class TraineeController {
         } catch (NoSuchElementException e) {
             trainee = traineeRepository.getTraineeByUsername(username);
         }
-
-        return trainee;
+        model.addAttribute("trainee", trainee);
+        return "index";
     }
 
     @PutMapping(value = "/updateProfile")
-    public Trainee update(@RequestBody SimpleTrainee newTraineeInfo) {
+    public String update(@RequestBody SimpleTrainee newTraineeInfo, Model model) {
         if (newTraineeInfo == null || newTraineeInfo.getUsername() == null || newTraineeInfo.getLastName() == null || newTraineeInfo.getFirstName() == null) {
             logger.warn("Insufficient data, missing username, first or last name");
             return null;
         }
-
         if (traineeRepository.getTraineeByUsername(newTraineeInfo.getUsername()) == null) {
             logger.warn("Trying to update non-existent trainee");
             return null;
@@ -97,7 +89,6 @@ public class TraineeController {
                     (newTraineeInfo.getAddress() == null) ? t.getAddress() : newTraineeInfo.getAddress());
             traineeService.selectTrainee(newTraineeInfo.getUsername()).setActive(newTraineeInfo.isActive());
             t = traineeService.selectTrainee(newTraineeInfo.getUsername());
-            traineeRepository.save(t);
         } catch (Exception e) {
             t = traineeRepository.getTraineeByUsername(newTraineeInfo.getUsername());
             t.setFirstName(newTraineeInfo.getFirstName());
@@ -105,52 +96,45 @@ public class TraineeController {
             t.setAddress((newTraineeInfo.getAddress() == null) ? t.getAddress() : newTraineeInfo.getAddress());
             t.setDateOfBirth((newTraineeInfo.getDateOfBirth() == null) ? t.getDateOfBirth() : newTraineeInfo.getDateOfBirth());
             t.setActive(newTraineeInfo.isActive());
-            traineeRepository.save(t);
         }
+        traineeRepository.save(t);
+        model.addAttribute("trainee", t);
 
-
-        return t;
+        return "index";
     }
 
     @DeleteMapping(value = "/deleteProfile")
-    public ResponseEntity delete(@RequestBody String username) {
-        if (username == null) {
-            logger.warn("Insufficient data, missing username");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public String delete(@RequestBody String username) {
         try {
             traineeService.deleteTrainee(username);
         } catch (Exception e) {
 
         }
         if (traineeRepository.getTraineeByUsername(username) == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return "400";
         }
         traineeRepository.deleteTrainee(traineeRepository.getTraineeByUsername(username));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return "index";
     }
 
     @GetMapping(value = "/getAvailableTrainers")
-    public List<Trainer> getAvailableTrainers(@RequestBody String traineeUsername) {
-        if (traineeUsername == null) {
-            logger.warn("Insufficient data, missing username");
-            return null;
-        }
+    public String getAvailableTrainers(@RequestBody String traineeUsername, Model model) {
         System.out.println(traineeUsername);
-        return trainerRepository.getAvailableTrainerListByTraineeUsername(traineeUsername);
+        model.addAttribute("trainers", trainerRepository.getAvailableTrainerListByTraineeUsername(traineeUsername));
+        return "index";
     }
 
     @PutMapping(value = "/updateTraineesTrainersList")
-    public Trainer[] updateTraineesTrainersList(@RequestBody TraineesTrainersList traineesTrainersList) {
+    public String updateTraineesTrainersList(@RequestBody TraineesTrainersList traineesTrainersList, Model model) {
         System.out.println(traineesTrainersList.getTrainers());
         if (traineesTrainersList == null || traineesTrainersList.getLogin() == null || traineesTrainersList.getTrainers() == null) {
             logger.warn("Insufficient data, missing username or trainers list");
-            return null;
+            return "404";
         }
 
         if (traineeRepository.getTraineeByUsername(traineesTrainersList.getLogin()) == null) {
             logger.warn("Trying to update non-existent trainee");
-            return null;
+            return "404";
         }
         Trainee t = new Trainee();
         try {
@@ -162,42 +146,36 @@ public class TraineeController {
             t = traineeRepository.getTraineeByUsername(traineesTrainersList.getLogin());
             t.setTrainers(Arrays.stream(traineesTrainersList.getTrainers()).toList());
             traineeRepository.save(t);
-
         }
-
-        return traineesTrainersList.getTrainers();
+        model.addAttribute("trainers", traineesTrainersList.getTrainers());
+        return "index";
     }
 
     @GetMapping(value = "/getTraineesTrainingsList")
-    public List<Training> getTraineesTrainingsList(@RequestBody String traineeUsername) {
-        if (traineeUsername == null) {
-            logger.warn("Insufficient data, missing username");
-            return null;
-        }
-
+    public String getTraineesTrainingsList(@RequestBody String traineeUsername, Model model) {
         if (traineeRepository.getTraineeByUsername(traineeUsername) == null) {
             logger.warn("Trying to update non-existent trainee");
-            return null;
+            return "404";
         }
-        return traineeRepository.getTrainingsByUsernameAndCriteria(traineeUsername, null, null, null, null);
+        model.addAttribute("trainings", traineeRepository.getTrainingsByUsernameAndCriteria(traineeUsername, null, null, null, null));
+        return "index";
     }
 
     @PatchMapping(value = "/toggleActive")
-    public ResponseEntity toggleActive(@RequestBody ActiveUser user) {
+    public String toggleActive(@RequestBody ActiveUser user) {
         System.out.println(user.getUsername() + " " + user.isActive());
         if (user == null || user.getUsername() == null) {
             logger.warn("Insufficient data, missing username");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return "404";
         }
-
         if (traineeRepository.getTraineeByUsername(user.getUsername()) == null) {
             logger.warn("Trying to update non-existent trainee");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return "404";
         }
         boolean userIsActive = traineeRepository.getTraineeByUsername(user.getUsername()).isActive();
         if (user.isActive() != userIsActive) {
             traineeRepository.toggleActiveByUsername(user.getUsername());
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return "index";
     }
 }
