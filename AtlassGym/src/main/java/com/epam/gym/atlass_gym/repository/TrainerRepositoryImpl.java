@@ -7,6 +7,7 @@ import com.epam.gym.atlass_gym.model.Training_type;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -18,6 +19,8 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     TraineeRepositoryImpl traineeRepository;
     private String username;
     private String password;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public TrainerRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -195,9 +198,13 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         return username.equals(otherUsername) && password.equals(otherPassword);
     }
 
+    public boolean authentificate(String otherUsername) {
+        return username.equals(otherUsername);
+    }
+
     public boolean authorise(String username, String password) {
         Trainer t = getTrainerByUsername(username);
-        if (t != null && t.getPassword().equals(password)) {
+        if (t != null && passwordEncoder.matches(password, t.getPassword())) {
             this.username = username;
             this.password = password;
             return true;

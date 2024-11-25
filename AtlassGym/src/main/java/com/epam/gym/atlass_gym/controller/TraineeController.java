@@ -7,12 +7,14 @@ import com.epam.gym.atlass_gym.model.mapped.TraineesTrainersList;
 import com.epam.gym.atlass_gym.repository.TraineeRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainerRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainingRepositoryImpl;
+import com.epam.gym.atlass_gym.service.JWTService;
 import com.epam.gym.atlass_gym.service.TraineeService;
 import com.epam.gym.atlass_gym.service.TrainerService;
 import com.epam.gym.atlass_gym.service.TrainingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +38,10 @@ public class TraineeController {
     private TrainerRepositoryImpl trainerRepository;
     @Autowired
     private TrainingRepositoryImpl trainingRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JWTService jwtService;
 
     private Logger logger = LoggerFactory.getLogger(TraineeController.class);
 
@@ -49,9 +55,13 @@ public class TraineeController {
                 trainee.getLastName(),
                 trainee.getDateOfBirth(),
                 trainee.getAddress());
-        traineeRepository.save(outTrainee);
         model.addAttribute("username", outTrainee.getUsername());
         model.addAttribute("password", outTrainee.getPassword());
+
+        System.out.println(outTrainee.getPassword());
+
+        outTrainee.setPassword(passwordEncoder.encode(outTrainee.getPassword()));
+        traineeRepository.save(outTrainee);
         return "index";
     }
 

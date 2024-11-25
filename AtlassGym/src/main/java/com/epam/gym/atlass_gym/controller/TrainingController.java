@@ -8,6 +8,7 @@ import com.epam.gym.atlass_gym.model.mapped.SimpleTraining;
 import com.epam.gym.atlass_gym.repository.TraineeRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainerRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainingRepositoryImpl;
+import com.epam.gym.atlass_gym.service.JWTService;
 import com.epam.gym.atlass_gym.service.TrainingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,8 @@ public class TrainingController {
     @Autowired
     private TrainerRepositoryImpl trainerRepository;
     private Logger logger = LoggerFactory.getLogger(TrainingController.class);
+    @Autowired
+    private JWTService jwtService;
 
     @PostMapping(value = "/add")
     public String add(@RequestBody SimpleTraining training) {

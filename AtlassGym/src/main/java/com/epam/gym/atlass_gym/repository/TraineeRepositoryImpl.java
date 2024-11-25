@@ -5,6 +5,8 @@ import com.epam.gym.atlass_gym.model.Training;
 import com.epam.gym.atlass_gym.model.Training_type;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,10 +17,11 @@ import java.util.Optional;
 public class TraineeRepositoryImpl implements TraineeRepository {
 
     EntityManager entityManager;
-
     private String username;
     private String password;
     private boolean isTrainer;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public TraineeRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -144,16 +147,27 @@ public class TraineeRepositoryImpl implements TraineeRepository {
         return username.equals(otherUsername) && password.equals(otherPassword);
     }
 
-    public boolean authorise(String username, String password) {
-        System.out.println("authorise " + username + " " + password);
+    public boolean authentificate(String otherUsername) {
+        return username.equals(otherUsername);
+    }
+
+    public boolean authorise(String username, String rawPassword) {
+        System.out.println("authorise " + username + " " + rawPassword);
         Trainee t = getTraineeByUsername(username);
-        if (t != null && t.getPassword().equals(password)) {
+        System.out.println(passwordEncoder.encode(rawPassword));
+        if (t != null && passwordEncoder.matches(rawPassword, t.getPassword())) {
             this.username = username;
-            this.password = password;
+            this.password = rawPassword;
             this.isTrainer = false;
             return true;
         }
         return false;
+    }
+
+    public void logout() {
+        this.username = null;
+        this.password = null;
+        this.isTrainer = false;
     }
 
     public void setTrainer() {
