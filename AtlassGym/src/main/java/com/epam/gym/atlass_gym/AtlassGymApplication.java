@@ -8,10 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@EnableEurekaServer
 public class AtlassGymApplication {
     @PersistenceContext
-    static
-    EntityManager entityManager;
+    static EntityManager entityManager;
 
     public static void main(String[] args) {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");

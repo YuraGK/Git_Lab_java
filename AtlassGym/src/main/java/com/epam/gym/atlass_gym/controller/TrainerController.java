@@ -1,8 +1,10 @@
 package com.epam.gym.atlass_gym.controller;
 
+
 import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.mapped.ActiveUser;
 import com.epam.gym.atlass_gym.model.mapped.SimpleTrainer;
+import com.epam.gym.atlass_gym.model.mapped.Workload;
 import com.epam.gym.atlass_gym.repository.TraineeRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainerRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainingRepositoryImpl;
@@ -10,15 +12,18 @@ import com.epam.gym.atlass_gym.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping(value = "/gym/trainer", consumes = {"application/JSON"})
+@EnableFeignClients
 public class TrainerController {
 
     @Autowired
@@ -131,6 +136,23 @@ public class TrainerController {
         if (user.isActive() != userIsActive) {
             trainerRepository.toggleActiveByUsername(user.getUsername());
         }
+        return "index";
+    }
+
+    @PutMapping(value = "/putWorkload")
+    public String putWorkload(@RequestBody Workload workload) {
+        System.out.println(workload.getUsername() + " " + workload.isActive());
+        if (workload == null || workload.getUsername() == null) {
+            logger.warn("Insufficient data, missing username");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        if (trainerRepository.getTrainerByUsername(workload.getUsername()) == null) {
+            logger.warn("Trying to update non-existent trainer");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        //doooooo
+
         return "index";
     }
 }

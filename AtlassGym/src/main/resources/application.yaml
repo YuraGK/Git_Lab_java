@@ -27,6 +27,10 @@ management:
   endpoint:
     health:
       show-details: always
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
 ---
 spring:
   active:
