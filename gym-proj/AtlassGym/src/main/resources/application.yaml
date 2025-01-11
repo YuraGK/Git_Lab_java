@@ -1,0 +1,23 @@
+spring:
+  active:
+    profiles: dev
+  jpa:
+    database: postgresql
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/postgres
+    username: newuser
+    password: password
+    driver-class-name: org.postgresql.Driver
+jwt:
+  secret: gymappomgitsyoungsheldon
+  expiration: 3600000
+server:
+  port: 8082
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
