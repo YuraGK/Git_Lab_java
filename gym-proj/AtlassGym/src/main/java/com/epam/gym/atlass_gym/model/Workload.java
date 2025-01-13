@@ -1,5 +1,6 @@
 package com.epam.gym.atlass_gym.model;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -8,7 +9,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 
-
+@Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
@@ -23,15 +24,6 @@ public class Workload {
     private boolean isActive;
     private LocalDate date;
     private double duration;
-
-    public Workload(String username, String firstName, String lastName, boolean active, LocalDate trainingDate, double trainingDuration) {
-        this.username=username;
-        this.firstName=firstName;
-        this.lastName=lastName;
-        this.isActive=active;
-        this.date=trainingDate;
-        this.duration=trainingDuration;
-    }
 
 
     public String getUsername() {

@@ -38,8 +38,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/trainer/register",
-                                "/trainee/register", "/login").permitAll()
+                        .requestMatchers("/gym/trainer/register",
+                                "/gym/trainee/register", "/login").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

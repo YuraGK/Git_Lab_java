@@ -1,7 +1,10 @@
 package com.epam.gym.atlass_gym.controller;
 
 
-import com.epam.gym.atlass_gym.model.*;
+import com.epam.gym.atlass_gym.model.Trainee;
+import com.epam.gym.atlass_gym.model.Trainer;
+import com.epam.gym.atlass_gym.model.Training;
+import com.epam.gym.atlass_gym.model.Workload;
 import com.epam.gym.atlass_gym.model.mapped.SimpleTraining;
 import com.epam.gym.atlass_gym.repository.TraineeRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainerRepositoryImpl;
@@ -9,13 +12,10 @@ import com.epam.gym.atlass_gym.repository.TrainingRepositoryImpl;
 import com.epam.gym.atlass_gym.service.JWTService;
 import com.epam.gym.atlass_gym.service.TrainingService;
 import com.netflix.discovery.EurekaClient;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +23,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
 
 @Controller
-@RequestMapping(value = "/training", consumes = {"application/JSON"})
+@RequestMapping(value = "/gym/training", consumes = {"application/JSON"})
 public class TrainingController {
 
 
@@ -47,8 +44,10 @@ public class TrainingController {
     @Autowired
     private JWTService jwtService;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @PostMapping(value = "/add")
-    @CircuitBreaker(name = "putTraining", fallbackMethod = "fallbackPutTraining")
     public String add(@RequestBody SimpleTraining training, Model model) {
 
         if (training == null ||
@@ -86,22 +85,9 @@ public class TrainingController {
         }
 
         //send to workload service
+        Workload workload = restTemplate.getForObject("http://localhost:8081/gym/putWorkload", Workload.class);
 
-        WorkloadInput workloadInput = new WorkloadInput(
-                trainer.getUsername(),
-                trainer.getFirstName(),
-                trainer.getLastName(),
-                trainer.isActive(),
-                train.getTrainingDate(),
-                train.getTrainingDuration(),
-        "ADD");
-
-        Workload workload = trainingService.sendWorkloadInfo(workloadInput);
-        if (workload==null) {
-            logger.warn("Error trying to save workload");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        model.addAttribute("workload", workload);
+        model.addAttribute("types", trainingRepository.getTrainingTypes());
 
         return "index";
     }
@@ -112,28 +98,6 @@ public class TrainingController {
     public String getProfile(Model model) {
         model.addAttribute("types", trainingRepository.getTrainingTypes());
         return "index";
-    }
-
-    @GetMapping(value = "/getWorkloadReport")
-    @CircuitBreaker(name = "getReport", fallbackMethod = "fallbackGetReport")
-    public String getWorkloadReport(Model model) {
-        TrainersMonthlyTrainings report = trainingService.getWorkloadInfo();
-        if (report==null) {
-            logger.warn("Error trying to get report");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        model.addAttribute("types", trainingRepository.getTrainingTypes());
-        return "index";
-    }
-
-    public ResponseEntity fallbackPutTraining(Throwable throwable) {
-        logger.error("Fallback on PutTraining: ", throwable.getMessage(), throwable);
-        return new ResponseEntity<>("Fail to create training ",HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    public ResponseEntity fallbackGetReport(Throwable throwable) {
-        logger.error("Fallback on GetReport: ", throwable.getMessage(), throwable);
-        return new ResponseEntity<>("Fail to get report ",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
