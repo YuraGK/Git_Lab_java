@@ -23,7 +23,7 @@ public class WorkloadService {
     private final WorkloadRepository workloadRepository;
     private Logger logger = LoggerFactory.getLogger(WorkloadService.class);
 
-    public Workload createMonthlyTraining(WorkloadInput workload) {
+    public void createMonthlyTraining(WorkloadInput workload) {
 
         Workload training = Workload.builder()
                 .username(workload.getUsername())
@@ -36,7 +36,6 @@ public class WorkloadService {
 
         workloadRepository.save(training);
         logger.info("Training appointment saved");
-        return training;
     }
 
 

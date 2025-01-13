@@ -2,7 +2,6 @@ package com.WorkloadService.workload_service.controller;
 
 
 import com.WorkloadService.workload_service.model.TrainersMonthlyTrainings;
-import com.WorkloadService.workload_service.model.Workload;
 import com.WorkloadService.workload_service.model.WorkloadInput;
 import com.WorkloadService.workload_service.service.WorkloadService;
 import com.netflix.discovery.EurekaClient;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(consumes = {"application/JSON"})
+@RequestMapping(value = "/gym", consumes = {"application/JSON"})
 @RequiredArgsConstructor
 public class WorkloadController {
 
@@ -29,25 +28,24 @@ public class WorkloadController {
     private Logger logger = LoggerFactory.getLogger(WorkloadController.class);
 
     @PutMapping(value = "/putWorkload")
-    public Workload putWorkload(@RequestBody WorkloadInput workload,Model model) {
+    public String putWorkload(@RequestBody WorkloadInput workload,Model model) {
         System.out.println(workload.getUsername() + " " + workload.isActive());
         if (workload == null || workload.getUsername() == null) {
             logger.warn("Insufficient data, missing username");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        Workload result = workloadService.createMonthlyTraining(workload);
+        workloadService.createMonthlyTraining(workload);
 
-
-        return result;
+        model.addAttribute("workload", workload);
+        return "index";
     }
 
-    @PostMapping(value = "/getWorkload")
-    public TrainersMonthlyTrainings getTrainersMonthlySummary(Model model) {
+    @GetMapping(value = "/getWorkload")
+    public void getTrainersMonthlySummary(Model model) {
 
         TrainersMonthlyTrainings report = workloadService.getTrainersMonthlySummary();
 
-        return report;
+        model.addAttribute("TrainersMonthlyTrainings", report);
     }
-
 }
