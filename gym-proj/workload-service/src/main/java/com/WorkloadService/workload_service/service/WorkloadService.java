@@ -23,7 +23,7 @@ public class WorkloadService {
     private final WorkloadRepository workloadRepository;
     private Logger logger = LoggerFactory.getLogger(WorkloadService.class);
 
-    public void createMonthlyTraining(WorkloadInput workload) {
+    public Workload createMonthlyTraining(WorkloadInput workload) {
 
         Workload training = Workload.builder()
                 .username(workload.getUsername())
@@ -36,44 +36,42 @@ public class WorkloadService {
 
         workloadRepository.save(training);
         logger.info("Training appointment saved");
+        return training;
     }
 
 
     public TrainersMonthlyTrainings getTrainersMonthlySummary() {
 
         List<Workload> workList = (List<Workload>) workloadRepository.findAll();
+        logger.info("workList: " + workList + " " + workList.size());
 
-        if (workList.isEmpty()) return null;
-        Workload first = workList.get(0);
-        TrainersMonthlyTrainings report = TrainersMonthlyTrainings.builder()
-                .username(first.getUsername())
-                .firstName(first.getFirstName())
-                .lastName(first.getLastName())
-                .isActive(first.isActive())
-                .years(getSchedule(workList))
-                .build();
-
-        return report;
-    }
-
-    private List<List<String>> getSchedule(List<Workload> workList) {
-        List<List<String>> result = new ArrayList<List<String>>();
-
-        List<String> temp = new ArrayList<String>();
-        int year = workList.get(0).getDate().getYear();
-
-
-        for (Workload w : workList) {
-            if (w.getDate().getYear() != year) {
-                result.add(temp);
-                year = w.getDate().getYear();
-                temp = new ArrayList<String>();
-            }
-            temp.add(w.getDate() + " " + w.getDuration());
+        try {
+            Workload first = workList.get(0);
+            TrainersMonthlyTrainings report = TrainersMonthlyTrainings.builder()
+                    .username(first.getUsername())
+                    .firstName(first.getFirstName())
+                    .lastName(first.getLastName())
+                    .isActive(first.isActive())
+                    .years(getSchedule(workList))
+                    .build();
+            return report;
+        } catch (IndexOutOfBoundsException e) {
 
         }
 
 
-        return result;
+        return new TrainersMonthlyTrainings();
+    }
+
+    private List<String> getSchedule(List<Workload> workList) {
+
+        List<String> temp = new ArrayList<String>();
+
+        for (Workload w : workList) {
+            temp.add(w.getDate() + " " + w.getDuration());
+        }
+
+
+        return temp;
     }
 }

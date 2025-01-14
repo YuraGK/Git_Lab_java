@@ -2,6 +2,7 @@ package com.WorkloadService.workload_service.controller;
 
 
 import com.WorkloadService.workload_service.model.TrainersMonthlyTrainings;
+import com.WorkloadService.workload_service.model.Workload;
 import com.WorkloadService.workload_service.model.WorkloadInput;
 import com.WorkloadService.workload_service.service.WorkloadService;
 import com.netflix.discovery.EurekaClient;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(value = "/gym", consumes = {"application/JSON"})
+@RequestMapping(consumes = {"application/JSON"})
 @RequiredArgsConstructor
 public class WorkloadController {
 
@@ -28,24 +29,24 @@ public class WorkloadController {
     private Logger logger = LoggerFactory.getLogger(WorkloadController.class);
 
     @PutMapping(value = "/putWorkload")
-    public String putWorkload(@RequestBody WorkloadInput workload,Model model) {
+    public Workload putWorkload(@RequestBody WorkloadInput workload, Model model) {
         System.out.println(workload.getUsername() + " " + workload.isActive());
         if (workload == null || workload.getUsername() == null) {
             logger.warn("Insufficient data, missing username");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        workloadService.createMonthlyTraining(workload);
+        Workload result = workloadService.createMonthlyTraining(workload);
 
-        model.addAttribute("workload", workload);
-        return "index";
+
+        return result;
     }
 
-    @GetMapping(value = "/getWorkload")
-    public void getTrainersMonthlySummary(Model model) {
+    @GetMapping(value = "/getWorkload", consumes = {"application/JSON"}, produces = {"application/JSON"})
+    public TrainersMonthlyTrainings getTrainersMonthlySummary(Model model) {
 
         TrainersMonthlyTrainings report = workloadService.getTrainersMonthlySummary();
-
-        model.addAttribute("TrainersMonthlyTrainings", report);
+        return report;
     }
+
 }
