@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Controller
-@RequestMapping(value = "/gym/trainee", consumes = {"application/JSON"})
+@RequestMapping(value = "/trainee", consumes = {"application/JSON"})
 public class TraineeController {
 
     @Autowired

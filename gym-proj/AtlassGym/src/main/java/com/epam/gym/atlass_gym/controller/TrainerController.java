@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @Controller
-@RequestMapping(value = "/gym/trainer", consumes = {"application/JSON"})
+@RequestMapping(value = "/trainer", consumes = {"application/JSON"})
 public class TrainerController {
 
     @Autowired

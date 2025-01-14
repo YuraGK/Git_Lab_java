@@ -1,10 +1,7 @@
 package com.epam.gym.atlass_gym.service;
 
 import com.epam.gym.atlass_gym.dao.TrainingDAO;
-import com.epam.gym.atlass_gym.model.Trainee;
-import com.epam.gym.atlass_gym.model.Trainer;
-import com.epam.gym.atlass_gym.model.Training;
-import com.epam.gym.atlass_gym.model.Training_type;
+import com.epam.gym.atlass_gym.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +44,16 @@ public class TrainingService {
 
     public void dropTrainings() {
         trainingDAO.dropTrainings();
+    }
+
+    @Autowired
+    private WorkloadCallService workloadCallService;
+
+    public Workload sendWorkloadInfo(WorkloadInput workload) {
+        return workloadCallService.putWorkload(workload);
+    }
+
+    public TrainersMonthlyTrainings getWorkloadInfo() {
+        return workloadCallService.getReport();
     }
 }

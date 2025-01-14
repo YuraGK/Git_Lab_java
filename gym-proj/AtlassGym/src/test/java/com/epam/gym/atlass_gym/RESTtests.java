@@ -41,7 +41,7 @@ public class RESTtests {
         String o = "{\"firstName\":\"Dohn\",\"lastName\":\"Huan\",\"dateOfBirth\":\"2024-12-09\",\"address\":\"Dnipro\"}";
 
         ResultActions result = this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/gym/trainee/register")
+                        MockMvcRequestBuilders.post("/trainee/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(o))
                 .andDo(print())
@@ -63,7 +63,7 @@ public class RESTtests {
         System.out.println(token);
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainee/getProfile")
+                        MockMvcRequestBuilders.get("/trainee/getProfile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Dohn.Huan")
                                 .header("Authorization", "Bearer " + token))
@@ -91,7 +91,7 @@ public class RESTtests {
                 "    \"address\":\"Rome\"\n}";
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainee/updateProfile")
+                        MockMvcRequestBuilders.put("/trainee/updateProfile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(up)
                                 .header("Authorization", "Bearer " + token))
@@ -114,7 +114,7 @@ public class RESTtests {
                 "}";
 
         ResultActions result = this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/gym/trainer/register")
+                        MockMvcRequestBuilders.post("/trainer/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(o))
                 .andDo(print())
@@ -147,7 +147,7 @@ public class RESTtests {
                 .andExpect(status().isOk());//trainer change login
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainer/getProfile")
+                        MockMvcRequestBuilders.get("/trainer/getProfile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Neo.Lokiii")
                                 .header("Authorization", "Bearer " + token))
@@ -165,7 +165,7 @@ public class RESTtests {
                 "    }\n" +
                 "}";
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainer/updateProfile")
+                        MockMvcRequestBuilders.put("/trainer/updateProfile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(up)
                                 .header("Authorization", "Bearer " + token))
@@ -181,7 +181,7 @@ public class RESTtests {
     public void trainingTest() throws Exception {
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainee/getProfile")
+                        MockMvcRequestBuilders.get("/trainee/getProfile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Dohn.Huan")
                                 .header("Authorization", "Bearer " + token))
@@ -190,7 +190,7 @@ public class RESTtests {
                 .andExpect(model().attributeExists("trainee"));//trainee get
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainer/getProfile")
+                        MockMvcRequestBuilders.get("/trainer/getProfile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Neo.Lokiii")
                                 .header("Authorization", "Bearer " + token))
@@ -199,7 +199,7 @@ public class RESTtests {
                 .andExpect(model().attributeExists("trainer"));//trainer get
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainee/getAvailableTrainers")
+                        MockMvcRequestBuilders.get("/trainee/getAvailableTrainers")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Dohn.Huan")
                                 .header("Authorization", "Bearer " + token))
@@ -220,7 +220,7 @@ public class RESTtests {
                 "        }]\n" +
                 "}";
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.put("/gym/trainee/updateTraineesTrainersList")
+                        MockMvcRequestBuilders.put("/trainee/updateTraineesTrainersList")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(up)
                                 .header("Authorization", "Bearer " + token))
@@ -237,7 +237,7 @@ public class RESTtests {
                 "}";
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainee/getTraineesTrainingsList")
+                        MockMvcRequestBuilders.get("/trainee/getTraineesTrainingsList")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Dohn.Huan")
                                 .header("Authorization", "Bearer " + token))
@@ -245,7 +245,7 @@ public class RESTtests {
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/trainer/getTrainersTrainingsList")
+                        MockMvcRequestBuilders.get("/trainer/getTrainersTrainingsList")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Neo.Lokiii")
                                 .header("Authorization", "Bearer " + token))
@@ -253,7 +253,7 @@ public class RESTtests {
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/gym/training/getTypes")
+                        MockMvcRequestBuilders.get("/training/getTypes")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + token))
                 .andDo(print())
@@ -262,7 +262,7 @@ public class RESTtests {
 
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/gym/training/add")
+                        MockMvcRequestBuilders.post("/training/add")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(training)
                                 .header("Authorization", "Bearer " + token))
@@ -274,7 +274,7 @@ public class RESTtests {
     @Order(4)
     public void deleteTrainee() throws Exception {
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/gym/trainee/toggleActive")
+                        MockMvcRequestBuilders.patch("/trainee/toggleActive")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\n" +
                                         "    \"username\":\"Dohn.Huan\",\n" +
@@ -284,7 +284,7 @@ public class RESTtests {
                 .andExpect(status().isOk());//trainee deactivate
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/gym/trainer/toggleActive")
+                        MockMvcRequestBuilders.patch("/trainer/toggleActive")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\n" +
                                         "    \"username\":\"Neo.Lokiii\",\n" +
@@ -295,7 +295,7 @@ public class RESTtests {
 
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/gym/trainee/deleteProfile")
+                        MockMvcRequestBuilders.delete("/trainee/deleteProfile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("Dohn.Huan"))
                 .andDo(print())
@@ -323,35 +323,35 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.post("/gym/trainee/register")
+                            MockMvcRequestBuilders.post("/trainee/register")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"firstName\":\"l\"}"))
                     .andDo(print());
         });
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.post("/gym/trainer/register")
+                            MockMvcRequestBuilders.post("/trainer/register")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"firstName\":\"l\"}"))
                     .andDo(print());
         });
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.put("/gym/trainee/updateProfile")
+                            MockMvcRequestBuilders.put("/trainee/updateProfile")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"firstName\":\"l\"}"))
                     .andDo(print());
         });
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.put("/gym/trainer/updateProfile")
+                            MockMvcRequestBuilders.put("/trainer/updateProfile")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"firstName\":\"l\"}"))
                     .andDo(print());
         });
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.put("/gym/trainee/updateProfile")
+                            MockMvcRequestBuilders.put("/trainee/updateProfile")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"username\":\"Ded.Ded\",\n" +
                                             "    \"firstName\":\"Mann\",\n" +
@@ -363,7 +363,7 @@ public class RESTtests {
         });
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.put("/gym/trainer/updateProfile")
+                            MockMvcRequestBuilders.put("/trainer/updateProfile")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"username\":\"Ded.Ded\",\n" +
                                             "    \"firstName\":\"Mann\",\n" +
@@ -376,14 +376,14 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.put("/gym/trainee/updateTraineesTrainersList")
+                            MockMvcRequestBuilders.put("/trainee/updateTraineesTrainersList")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{}"))
                     .andDo(print());
         });
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.put("/gym/trainee/updateTraineesTrainersList")
+                            MockMvcRequestBuilders.put("/trainee/updateTraineesTrainersList")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"username\":\"Ded.Ded\"}"))
                     .andDo(print());
@@ -391,7 +391,7 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.get("/gym/trainee/getTraineesTrainingsList")
+                            MockMvcRequestBuilders.get("/trainee/getTraineesTrainingsList")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"username\":\"Ded.Ded\"}"))
                     .andDo(print());
@@ -399,7 +399,7 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/gym/trainee/toggleActive")
+                            MockMvcRequestBuilders.patch("/trainee/toggleActive")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{}"))
                     .andDo(print());
@@ -407,7 +407,7 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/gym/trainee/toggleActive")
+                            MockMvcRequestBuilders.patch("/trainee/toggleActive")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"username\":\"Ded.Ded\"}"))
                     .andDo(print());
@@ -415,7 +415,7 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.get("/gym/trainer/getTrainersTrainingsList")
+                            MockMvcRequestBuilders.get("/trainer/getTrainersTrainingsList")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("Ded.Ded"))
                     .andDo(print());
@@ -423,7 +423,7 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/gym/trainer/toggleActive")
+                            MockMvcRequestBuilders.patch("/trainer/toggleActive")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{}"))
                     .andDo(print());
@@ -431,7 +431,7 @@ public class RESTtests {
 
         assertThrows(Exception.class, () -> {
             this.mockMvc.perform(
-                            MockMvcRequestBuilders.patch("/gym/trainer/toggleActive")
+                            MockMvcRequestBuilders.patch("/trainer/toggleActive")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content("{\"username\":\"Ded.Ded\"}"))
                     .andDo(print());
