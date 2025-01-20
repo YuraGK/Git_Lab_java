@@ -1,10 +1,10 @@
 package com.WorkloadService.workload_service.controller;
 
 
-import com.WorkloadService.workload_service.model.Workload;
-import com.WorkloadService.workload_service.model.WorkloadInput;
 import com.WorkloadService.workload_service.service.WorkloadService;
 import com.warehouse.tmp.module.TrainersMonthlyTrainings;
+import com.warehouse.tmp.module.Workload;
+import com.warehouse.tmp.module.WorkloadInput;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import lombok.RequiredArgsConstructor;

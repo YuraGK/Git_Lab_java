@@ -1,9 +1,9 @@
 package com.WorkloadService.workload_service.service;
 
-import com.WorkloadService.workload_service.model.Workload;
-import com.WorkloadService.workload_service.model.WorkloadInput;
 import com.WorkloadService.workload_service.repository.WorkloadRepository;
 import com.warehouse.tmp.module.TrainersMonthlyTrainings;
+import com.warehouse.tmp.module.Workload;
+import com.warehouse.tmp.module.WorkloadInput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -25,14 +25,16 @@ public class WorkloadService {
 
     public Workload createMonthlyTraining(WorkloadInput workload) {
 
-        Workload training = Workload.builder()
+        Workload training = new Workload(workload.getUsername(), workload.getFirstName(),
+                workload.getLastName(), workload.isActive(), workload.getDate(), workload.getDuration());
+        /*.builder()
                 .username(workload.getUsername())
                 .firstName(workload.getFirstName())
                 .lastName(workload.getLastName())
-                .isActive(workload.isActive())
+                .active(workload.isActive())
                 .date(workload.getDate())
                 .duration(workload.getDuration())
-                .build();
+                .build();*/
 
         workloadRepository.save(training);
         logger.info("Training appointment saved");

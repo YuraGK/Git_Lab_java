@@ -9,7 +9,6 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-
 @Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)

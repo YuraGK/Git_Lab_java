@@ -264,15 +264,15 @@ public class RESTtests {
         this.mockMvc.perform(
                         MockMvcRequestBuilders.post("/training/add")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("")
+                                .content(training)
                                 .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/training/getWorkloadReport")
+                        MockMvcRequestBuilders.get("/training/getWorkloadReport")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(training)
+                                .content("")
                                 .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk());

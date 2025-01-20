@@ -1,8 +1,8 @@
 package com.epam.gym.atlass_gym.controller;
 
-import com.epam.gym.atlass_gym.model.Workload;
-import com.epam.gym.atlass_gym.model.WorkloadInput;
 import com.warehouse.tmp.module.TrainersMonthlyTrainings;
+import com.warehouse.tmp.module.Workload;
+import com.warehouse.tmp.module.WorkloadInput;
 import jakarta.jms.*;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.slf4j.Logger;
@@ -32,14 +32,7 @@ public class Sender {
         });*/
         String responseQueue = "getworkloadresponse";
         Destination replyTo = new ActiveMQQueue(responseQueue);
-        jmsTemplate.convertAndSend("putworkload", new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                ObjectMessage objectMessage = session.createObjectMessage(message);
-                objectMessage.setJMSReplyTo(replyTo);
-                return objectMessage;
-            }
-        });
+        jmsTemplate.convertAndSend("putworkload", message);
         return (Workload) jmsTemplate.receiveAndConvert(responseQueue);
 
     }

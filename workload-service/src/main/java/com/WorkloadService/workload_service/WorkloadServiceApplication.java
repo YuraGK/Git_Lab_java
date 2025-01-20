@@ -4,12 +4,14 @@ package com.WorkloadService.workload_service;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 
 @EnableAutoConfiguration
 @SpringBootApplication
+@EntityScan("com.warehouse.tmp.*")
 public class WorkloadServiceApplication extends SpringBootServletInitializer {
 
 

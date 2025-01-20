@@ -1,11 +1,9 @@
 package com.epam.gym.atlass_gym.controller;
 
 
-import com.epam.gym.atlass_gym.config.JmsConfig;
 import com.epam.gym.atlass_gym.model.Trainee;
 import com.epam.gym.atlass_gym.model.Trainer;
 import com.epam.gym.atlass_gym.model.Training;
-import com.epam.gym.atlass_gym.model.WorkloadInput;
 import com.epam.gym.atlass_gym.model.mapped.SimpleTraining;
 import com.epam.gym.atlass_gym.repository.TraineeRepositoryImpl;
 import com.epam.gym.atlass_gym.repository.TrainerRepositoryImpl;
@@ -13,13 +11,12 @@ import com.epam.gym.atlass_gym.repository.TrainingRepositoryImpl;
 import com.epam.gym.atlass_gym.service.JWTService;
 import com.epam.gym.atlass_gym.service.TrainingService;
 import com.netflix.discovery.EurekaClient;
+import com.warehouse.tmp.module.WorkloadInput;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.support.converter.MessageConverter;
@@ -107,8 +104,6 @@ public class TrainingController {
 
 
         //Workload workload = trainingService.sendWorkloadInfo(workloadInput);
-        AbstractApplicationContext context =
-                new AnnotationConfigApplicationContext(JmsConfig.class);
 
 /*
         if (workload == null) {
