@@ -102,21 +102,10 @@ public class TrainingController {
                 train.getTrainingDuration(),
                 "ADD");
 
-
-        //Workload workload = trainingService.sendWorkloadInfo(workloadInput);
-
-/*
-        if (workload == null) {
-            logger.warn("Error trying to save workload");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        model.addAttribute("workload", workload);
-*/
         model.addAttribute("workload", senderService.sendMessage(workloadInput));
         return "index";
     }
-
-
+    
     @GetMapping(value = "/getTypes")
     public String getProfile(Model model) {
         model.addAttribute("types", trainingRepository.getTrainingTypes());
@@ -126,25 +115,10 @@ public class TrainingController {
     @GetMapping(value = "/getWorkloadReport", produces = {"application/JSON"}, consumes = {"application/JSON"})
     @CircuitBreaker(name = "getReport", fallbackMethod = "fallbackGetReport")
     public String getWorkloadReport(Model model) {
-        /*TrainersMonthlyTrainings report = trainingService.getWorkloadInfo();
-        if (report == null) {
-            logger.warn("Error trying to get report");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        model.addAttribute("report", report);*/
-
 
         model.addAttribute("report", senderService.sendMessage("doit"));
         return "index";
     }
-/*
-    @JmsListener(destination = "getreport")
-    public TrainersMonthlyTrainings getTrainersMonthlySummary(final Message message) throws Exception {
-        TrainersMonthlyTrainings report = (TrainersMonthlyTrainings) messageConverter.fromMessage(message);
-        return report;
-    }*/
-
 
     public ResponseEntity fallbackPutTraining(Throwable throwable) {
         logger.error("Fallback on PutTraining: ", throwable.getMessage(), throwable);

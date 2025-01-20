@@ -27,14 +27,6 @@ public class WorkloadService {
 
         Workload training = new Workload(workload.getUsername(), workload.getFirstName(),
                 workload.getLastName(), workload.isActive(), workload.getDate(), workload.getDuration());
-        /*.builder()
-                .username(workload.getUsername())
-                .firstName(workload.getFirstName())
-                .lastName(workload.getLastName())
-                .active(workload.isActive())
-                .date(workload.getDate())
-                .duration(workload.getDuration())
-                .build();*/
 
         workloadRepository.save(training);
         logger.info("Training appointment saved");
@@ -53,19 +45,6 @@ public class WorkloadService {
                     first.getUsername(), first.getFirstName(),
                     first.getLastName(), first.isActive(),
                     getSchedule(workList));
-            /*TrainersMonthlyTrainings report = TrainersMonthlyTrainings.builder()
-                    .username(first.getUsername())
-                    .firstName(first.getFirstName())
-                    .lastName(first.getLastName())
-                    .isActive(first.isActive())
-                    .years(getSchedule(workList))
-                    .build();*/
-/*
-            report.setUsername(first.getUsername());
-            report.setFirstName(first.getFirstName());
-            report.setLastName(first.getLastName());
-            report.setActive(first.isActive());
-            report.setYears(getSchedule(workList));*/
             return report;
         } catch (IndexOutOfBoundsException e) {
 
