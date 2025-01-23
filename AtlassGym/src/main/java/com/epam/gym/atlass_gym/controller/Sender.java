@@ -3,12 +3,11 @@ package com.epam.gym.atlass_gym.controller;
 import com.warehouse.tmp.module.TrainersMonthlyTrainings;
 import com.warehouse.tmp.module.Workload;
 import com.warehouse.tmp.module.WorkloadInput;
-import jakarta.jms.*;
+import jakarta.jms.Destination;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
 
@@ -48,14 +47,7 @@ public class Sender {
 
         String responseQueue = "getreport";
         Destination replyTo = new ActiveMQQueue(responseQueue);
-        jmsTemplate.convertAndSend("getworkload", new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                ObjectMessage objectMessage = session.createObjectMessage(message);
-                objectMessage.setJMSReplyTo(replyTo);
-                return objectMessage;
-            }
-        });
+        jmsTemplate.convertAndSend("getworkload", message);
 
         return (TrainersMonthlyTrainings) jmsTemplate.receiveAndConvert(responseQueue);
 

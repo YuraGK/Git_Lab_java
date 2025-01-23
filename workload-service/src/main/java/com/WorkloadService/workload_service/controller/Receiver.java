@@ -43,9 +43,11 @@ public class Receiver {
         logger.info("putreport sent");
     }
 
-    public void sendReport() throws JMSException {
+    public void sendReport(final Message message) throws JMSException {
+        String username = (String) messageConverter.fromMessage(message);
+
         logger.info("workload1");
-        TrainersMonthlyTrainings report = workloadService.getTrainersMonthlySummary();
+        TrainersMonthlyTrainings report = workloadService.getTrainersMonthlySummary(username);
         logger.info("report: " + report);
 
         jmsTemplate.convertAndSend("getreport", report);

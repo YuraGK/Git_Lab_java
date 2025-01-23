@@ -27,7 +27,6 @@ public class TrainingService {
         trainingDAO.createTraining(training);
         logger.info("Training " + training.getTrainingName() + " created");
         logger.info(training.getId() + "");
-        logger.info(training.getId() + "");
     }
 
     public Training createTraining(String trainingName, Training_type trainingType, LocalDate trainingDate, Long trainingDuration) {

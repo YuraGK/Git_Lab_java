@@ -105,7 +105,7 @@ public class TrainingController {
         model.addAttribute("workload", senderService.sendMessage(workloadInput));
         return "index";
     }
-    
+
     @GetMapping(value = "/getTypes")
     public String getProfile(Model model) {
         model.addAttribute("types", trainingRepository.getTrainingTypes());
@@ -114,9 +114,8 @@ public class TrainingController {
 
     @GetMapping(value = "/getWorkloadReport", produces = {"application/JSON"}, consumes = {"application/JSON"})
     @CircuitBreaker(name = "getReport", fallbackMethod = "fallbackGetReport")
-    public String getWorkloadReport(Model model) {
-
-        model.addAttribute("report", senderService.sendMessage("doit"));
+    public String getWorkloadReport(@RequestBody String username, Model model) {
+        model.addAttribute("report", senderService.sendMessage(username));
         return "index";
     }
 

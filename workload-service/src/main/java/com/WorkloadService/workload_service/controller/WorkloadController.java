@@ -24,7 +24,7 @@ public class WorkloadController {
 
     @Autowired
     private Receiver receiver;
-    
+
     @JmsListener(destination = "putworkload",
             containerFactory = "jmsTopicContainerFactory")
     public void putWorkload(Message message) throws JMSException {
@@ -34,7 +34,7 @@ public class WorkloadController {
     @JmsListener(destination = "getworkload",
             containerFactory = "jmsTopicContainerFactory")
     public void getTrainersMonthlySummary(Message message) throws JMSException {
-        receiver.sendReport();
+        receiver.sendReport(message);
     }
 
 }
