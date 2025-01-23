@@ -23,6 +23,7 @@ public class TrainersWorkload extends TrainersMonthlyTrainings {
     @Indexed(unique = true)
     private String username;
 
+
     public TrainersWorkload(String username, String firstName,
                             String lastName, boolean isActive, List<String> years) {
         super(username, firstName,
