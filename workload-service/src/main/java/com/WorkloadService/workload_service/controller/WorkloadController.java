@@ -10,9 +10,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-/*
-@RestController
-@RequestMapping(consumes = {"application/JSON"})*/
 
 @Component
 @RequiredArgsConstructor

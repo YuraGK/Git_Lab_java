@@ -2,7 +2,6 @@ package com.WorkloadService.workload_service.service;
 
 import com.WorkloadService.workload_service.model.TrainersWorkload;
 import com.WorkloadService.workload_service.repository.WorkloadMongoDBRepository;
-import com.WorkloadService.workload_service.repository.WorkloadRepository;
 import com.warehouse.tmp.module.TrainersMonthlyTrainings;
 import com.warehouse.tmp.module.Workload;
 import com.warehouse.tmp.module.WorkloadInput;
@@ -21,10 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class WorkloadService {
-
-    private final WorkloadMongoDBRepository workloadMongoDBRepository;
     @Autowired
-    private final WorkloadRepository workloadRepository;
+    private WorkloadMongoDBRepository workloadMongoDBRepository;
     private Logger logger = LoggerFactory.getLogger(WorkloadService.class);
 
     public Workload createMonthlyTraining(WorkloadInput workload) {
@@ -32,13 +29,11 @@ public class WorkloadService {
         //use MongoDB
         Workload training = new Workload(workload.getUsername(), workload.getFirstName(),
                 workload.getLastName(), workload.isActive(), workload.getDate(), workload.getDuration());
-        
+
         workloadMongoDBRepository.save(new TrainersWorkload(workload.getUsername(), workload.getFirstName(),
                 workload.getLastName(), workload.isActive(),
                 getSchedule(Arrays.asList(training))));
 
-
-        workloadRepository.save(training);
         logger.info("Training appointment saved");
         return training;
     }
@@ -46,18 +41,15 @@ public class WorkloadService {
 
     public TrainersMonthlyTrainings getTrainersMonthlySummary(String username) {
 
-        List<Workload> workList = (List<Workload>) workloadRepository.findAll();
-        logger.info("workList: " + workList + " " + workList.size());
-
         try {
-            TrainersWorkload result = workloadMongoDBRepository.findByUsername(username);
-            logger.info("workList: " + result);
-            /*Workload first = workList.get(0);
+            TrainersWorkload work = workloadMongoDBRepository.findByUsername(username);
+            logger.info("workList: " + work);
+
             TrainersMonthlyTrainings report = new TrainersMonthlyTrainings(
-                    first.getUsername(), first.getFirstName(),
-                    first.getLastName(), first.isActive(),
-                    getSchedule(workList));*/
-            return result;
+                    work.getUsername(), work.getFirstName(),
+                    work.getLastName(), work.isActive(),
+                    work.getYears());
+            return report;
         } catch (Exception e) {
 
         }

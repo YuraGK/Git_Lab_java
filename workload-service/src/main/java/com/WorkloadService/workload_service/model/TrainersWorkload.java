@@ -1,33 +1,43 @@
 package com.WorkloadService.workload_service.model;
 
-import com.warehouse.tmp.module.TrainersMonthlyTrainings;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-@Getter
-@Setter
 @Document
-public class TrainersWorkload extends TrainersMonthlyTrainings {
+@Builder
+@Data
+@AllArgsConstructor
+public class TrainersWorkload implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private UUID id;
-
+    private int id;
     @Indexed(unique = true)
     private String username;
+    private String firstName;
+    private String lastName;
+    private boolean isActive;
+    private List<String> years;
 
+    public TrainersWorkload() {
+        years = new ArrayList<String>();
+    }
 
     public TrainersWorkload(String username, String firstName,
                             String lastName, boolean isActive, List<String> years) {
-        super(username, firstName,
-                lastName, isActive, years);
         this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isActive = isActive;
+        this.years = years;
     }
 }

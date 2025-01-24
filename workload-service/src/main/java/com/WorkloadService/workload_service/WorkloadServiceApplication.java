@@ -9,9 +9,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 
-@EnableAutoConfiguration
 @SpringBootApplication
 @EntityScan("com.warehouse.tmp.*")
+@EnableAutoConfiguration
 public class WorkloadServiceApplication extends SpringBootServletInitializer {
 
 

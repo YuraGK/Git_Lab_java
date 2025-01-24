@@ -272,7 +272,7 @@ public class RESTtests {
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/training/getWorkloadReport")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("")
+                                .content("Neo.Lokiii")
                                 .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk());
