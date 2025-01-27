@@ -26,9 +26,25 @@ public class WorkloadService {
 
     public Workload createMonthlyTraining(WorkloadInput workload) {
 
+
+        try {
+            TrainersWorkload work = workloadMongoDBRepository.findByUsername(workload.getUsername());
+            List<String> y = work.getYears();
+            y.add(workload.getDate() + " " + workload.getDuration());
+            work.setYears(y);
+            workloadMongoDBRepository.deleteById(work.getId());
+            workloadMongoDBRepository.save(work);
+            return new Workload(workload.getUsername(), workload.getFirstName(),
+                    workload.getLastName(), workload.isActive(), workload.getDate(), workload.getDuration());
+        } catch (Exception e) {
+        }
+
+
         //use MongoDB
         Workload training = new Workload(workload.getUsername(), workload.getFirstName(),
                 workload.getLastName(), workload.isActive(), workload.getDate(), workload.getDuration());
+
+        workloadMongoDBRepository.findAll().size();
 
         workloadMongoDBRepository.save(new TrainersWorkload(workload.getUsername(), workload.getFirstName(),
                 workload.getLastName(), workload.isActive(),

@@ -276,6 +276,30 @@ public class RESTtests {
                                 .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        training = "{\n" +
+                "    \"trainee\":\"Dohn.Huan\",\n" +
+                "    \"trainer\":\"Neo.Lokiii\",\n" +
+                "    \"trainingName\":\"Zoomba\",\n" +
+                "    \"trainingDate\":\"2024-04-15\",\n" +
+                "    \"trainingDuration\":45\n" +
+                "}";
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.post("/training/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(training)
+                                .header("Authorization", "Bearer " + token))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(
+                        MockMvcRequestBuilders.get("/training/getWorkloadReport")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("Neo.Lokiii")
+                                .header("Authorization", "Bearer " + token))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
