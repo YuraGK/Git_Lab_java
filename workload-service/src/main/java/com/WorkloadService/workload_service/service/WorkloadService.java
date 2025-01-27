@@ -43,8 +43,7 @@ public class WorkloadService {
         //use MongoDB
         Workload training = new Workload(workload.getUsername(), workload.getFirstName(),
                 workload.getLastName(), workload.isActive(), workload.getDate(), workload.getDuration());
-
-        workloadMongoDBRepository.findAll().size();
+        training.setId(workloadMongoDBRepository.findAll().size());
 
         workloadMongoDBRepository.save(new TrainersWorkload(workload.getUsername(), workload.getFirstName(),
                 workload.getLastName(), workload.isActive(),
