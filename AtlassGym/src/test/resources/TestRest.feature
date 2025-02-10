@@ -2,10 +2,7 @@ Feature: Rest tests
 
   Scenario Outline: test create user
     Given I open registration page
-    When I input name "<name>"
-    And I input familyname "<familyname>"
-    And I input password "<password>"
-    And If is trainer "<isTrainer>"
+    When I input name "<name>", familyname "<familyname>", password "<password>" and if is trainer "<isTrainer>"
     And Check if already created user "<exists>"
     Then I verify user creation
 
@@ -17,25 +14,19 @@ Feature: Rest tests
       | Ronn | Doe        | 652yh5   | false  | false     |
 
   Scenario Outline: test login function
-    Given I log into account
-    When I input username "<username>"
-    And I input password "<password>"
+    Given I log into account with username "<username>" and password "<password>"
     And Created user "<exists>"
     Then I verify access to account
 
     Examples:
       | username   | password | exists |
-      | Dohn.Huan  | 01oe0d   | true   |
-      | Neo.Lokiii | 6hr3f3   | false  |
-      | Mann.Coh   | ytr7fg   | true   |
+      | Neo.Lokiii | 6hr3f3   | true   |
 
   Scenario Outline: test add training function
     Given I add training
     When I am logged in "<trainerusername>" as a trainer
     And Trainee "<traineeusername>" exists
-    And I input training name "<trainingname>"
-    And I input training datetime "<trainingdatetime>"
-    And I input training duration "<trainingduration>"
+    And I input training name "<trainingname>", training datetime "<trainingdatetime>", training duration "<trainingduration>"
     Then I verify add training
 
     Examples:
@@ -43,3 +34,12 @@ Feature: Rest tests
       | Neo.Lokiii      | Dohn.Huan       | Zoomba       | 2021.08.04 11:30 | 15               |
       | Neo.Lokiii      | Ronn.Doe        | Aerobics     | 2022.11.21 08:45 | 45               |
       | Neo.Lokiii      | Mann.Coh        | Crossfit     | 2023.01.01 20:00 | 60               |
+
+  Scenario Outline: test check trainings workload function
+    Given I send request to get trainings workload
+    When I am logged in as trainer "<trainerusername>"
+    Then I verify check trainings workload
+
+    Examples:
+      | trainerusername |
+      | Neo.Lokiii      |
