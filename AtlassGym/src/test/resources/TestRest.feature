@@ -31,9 +31,9 @@ Feature: Rest tests
 
     Examples:
       | trainerusername | traineeusername | trainingname | trainingdatetime | trainingduration |
-      | Neo.Lokiii      | Dohn.Huan       | Zoomba       | 2021.08.04 11:30 | 15               |
-      | Neo.Lokiii      | Ronn.Doe        | Aerobics     | 2022.11.21 08:45 | 45               |
-      | Neo.Lokiii      | Mann.Coh        | Crossfit     | 2023.01.01 20:00 | 60               |
+      | Neo.Lokiii      | Dohn.Huan       | Zoomba       | 2021-08-04       | 15               |
+      | Neo.Lokiii      | Ronn.Doe        | Aerobics     | 2022-11-21       | 45               |
+      | Neo.Lokiii      | Mann.Coh        | Crossfit     | 2023-01-01       | 60               |
 
   Scenario Outline: test check trainings workload function
     Given I send request to get trainings workload

@@ -1,5 +1,9 @@
 package com.epam.gym.atlass_gym;
 
+import com.epam.gym.atlass_gym.controller.LoginController;
+import com.epam.gym.atlass_gym.controller.TraineeController;
+import com.epam.gym.atlass_gym.controller.TrainerController;
+import com.epam.gym.atlass_gym.controller.TrainingController;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,6 +30,6 @@ public class CucumberTests {
 
     @BeforeAll
     public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new AtlassGymApplication()).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new LoginController(), new TraineeController(), new TrainerController(), new TrainingController()).build();
     }
 }
