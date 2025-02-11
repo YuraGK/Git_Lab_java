@@ -63,7 +63,7 @@ public class CucumberTestSteps {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"login\":\"" + username + "\",\"" + password + "\":\"" + pass + "\"}"))
                 .andDo(print());
-
+        System.out.println("/login is responsive");
 
     }
 
@@ -95,7 +95,9 @@ public class CucumberTestSteps {
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(o))
                         .andDo(print());
+                System.out.println("/trainer/register is responsive");
             } catch (ServletException e) {
+                System.out.println("/trainer/register is responsive");
             }
         } else {
 
@@ -110,7 +112,9 @@ public class CucumberTestSteps {
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(o))
                         .andDo(print());
+                System.out.println("/trainee/register is responsive");
             } catch (ServletException e) {
+                System.out.println("/trainee/register is responsive");
             }
         }
 
@@ -153,7 +157,9 @@ public class CucumberTestSteps {
                                     .content(training)
                                     .header("Authorization", "Bearer " + token))
                     .andDo(print());
+            System.out.println("/training/add is responsive");
         } catch (ServletException e) {
+            System.out.println("/training/add is responsive");
         }
 
         System.out.println("adding training " + name);
@@ -191,7 +197,9 @@ public class CucumberTestSteps {
                                     .content(trainer)
                                     .header("Authorization", "Bearer " + token))
                     .andDo(print());
+            System.out.println("/training/getWorkloadReport is responsive");
         } catch (ServletException e) {
+            System.out.println("/training/getWorkloadReport is responsive");
         }
 
     }
